@@ -576,8 +576,8 @@ document.getElementById('fDate').value = today();
         <div class="sc"><div class="n" id="sC">0</div><div class="l">ปิดขาย</div></div>
       </div>
       <div class="sbar">
-        <input id="srch" placeholder="ค้นหาชื่อ, เบอร์, สินค้า..." oninput="renderList()">
-        <select id="fSt" onchange="renderList()">
+        <input id="srch" placeholder="ค้นหาชื่อ, เบอร์, สินค้า..." oninput="window.renderList()">
+        <select id="fSt" onchange="window.renderList()">
           <option value="">ทุกสถานะ</option><option value="0">รอติดต่อ</option>
           <option value="1">ติดต่อแล้ว</option><option value="2">ปิดการขาย</option><option value="3">ไม่สนใจ</option>
         </select>
@@ -795,7 +795,7 @@ window.delP=function(n){delete cart[n];renderPS();renderCW();};
 window.adjA=function(n,d){if(accCart[n])accCart[n].q=Math.max(1,accCart[n].q+d);renderCW();};
 window.delA=function(n){delete accCart[n];renderAS();renderCW();};
 
-function renderList(){
+window.renderList = function renderList(){
   var q=(document.getElementById('srch').value||'').toLowerCase(),sf=document.getElementById('fSt').value;
   var canEdit=USERS[me]&&USERS[me].role!=='viewer';
   var list=custs.slice().filter(function(c){
