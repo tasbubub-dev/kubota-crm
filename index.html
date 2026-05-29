@@ -366,7 +366,7 @@ function renderList(){
   el.innerHTML=list.map(function(c){
     var st=c.status||0, mi=c.cart||[], ai=c.accCart||[];
     var gt=mi.reduce(function(s,x){ return s+x.p*x.q; },0)+ai.reduce(function(s,x){ return s+x.p*x.q; },0);
-    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">FB: '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+(canEdit?'<div style="display:flex;gap:5px"><button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button><button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button></div>':'')+'</div></div>';
+    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+(canEdit?'<div style="display:flex;gap:5px"><button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button><button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button></div>':'')+'</div></div>';
   }).join('');
 }
 
@@ -578,7 +578,7 @@ document.getElementById('fDate').value = today();
           </div>
         </div>
         <div class="fg"><label>Line ID</label><input id="fLine" placeholder="Line ID"></div>
-        <div class="fg"><label>Facebook</label><input id="fFb" placeholder="Facebook"></div>
+        <div class="fg"><label>ที่อยู่</label><input id="fFb" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด"></div>
         <div class="fg"><label>สถานะ</label>
           <select id="fStat"><option value="0">รอติดต่อ</option><option value="1">ติดต่อแล้ว</option><option value="2">ปิดการขาย</option><option value="3">ไม่สนใจ</option></select>
         </div>
@@ -842,7 +842,7 @@ function renderPrev(){
 }
 window.doCSV=function(){
   if(!custs.length){showT('t1','ไม่มีข้อมูล',true);return;}
-  var h=['ชื่อ','วันที่','เบอร์','Line','FB','สินค้าหลัก','อุปกรณ์เสริม','รวมราคา','อาชีพ','สถานะ','วันนัด','หมายเหตุ'];
+  var h=['ชื่อ','วันที่','เบอร์','Line','ที่อยู่','สินค้าหลัก','อุปกรณ์เสริม','รวมราคา','อาชีพ','สถานะ','วันนัด','หมายเหตุ'];
   var rows=custs.map(function(c){var mp=(c.cart||[]).map(function(x){return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')';}).join('|');var ap=(c.accCart||[]).map(function(x){return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')';}).join('|');var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){return s+x.p*x.q;},0);return[c.name,c.date||'',c.tel||'',c.line||'',c.fb||'',mp,ap,tot?fmt(tot):'',c.income||'',ST[c.status||0],c.followup||'',c.note||''].map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');});
   var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent([h.join(',')].concat(rows).join('\n'));a.download='kubota_'+today()+'.csv';a.click();showT('t1','Export CSV แล้ว ✓');
 };
