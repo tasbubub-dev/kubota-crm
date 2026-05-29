@@ -168,16 +168,64 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f0f0;color:#222;min-h
 .badd.g{background:#1a7c3e}.badd.g:hover{background:#155f30}
 </style>
 </head>
+  <script type="module">
+
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword
+} from
+"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDRgRJ7eFcvKXJMgtUXwPWliu0DS3CvhhY",
+  authDomain: "kubota-crm.firebaseapp.com",
+  projectId: "kubota-crm",
+  storageBucket: "kubota-crm.firebasestorage.app",
+  messagingSenderId: "621683395275",
+  appId: "1:621683395275:web:182e0b425f83e620c4294e"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const auth = getAuth(app);
+
+window.login = async function () {
+
+  const email =
+    document.getElementById("username").value
+    + "@kubota.local";
+
+  const password =
+    document.getElementById("password").value;
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    alert("Login Success");
+
+  } catch (error) {
+
+    alert(error.message);
+
+    console.error(error);
+
+  }
+
+}
+
+console.log("Firebase Connected");
+
+</script>
 <body>
-<input id="username" placeholder="Username">
 
-<input id="password"
-type="password"
-placeholder="Password">
-
-<button onclick="login()">
-Login
-</button>
 <!-- LOGIN -->
 <div id="pgL">
   <div class="lcard">
@@ -565,66 +613,6 @@ window.addAccGrp=function(){var n=(document.getElementById('newAccGrp')?.value||
 window.resetAll=function(){if(!confirm('รีเซ็ตสินค้าและอุปกรณ์ทั้งหมดเป็นค่าเริ่มต้น?'))return;pdb=JSON.parse(JSON.stringify(DP));adb=JSON.parse(JSON.stringify(DA_DEF));selMC=null;selGrp='';selSer='';selAG='';saveProds();saveAcc();renderAdmin();renderPS();renderAS();showT('t3','รีเซ็ตแล้ว ✓');};
 
 document.getElementById('fDate').value=today();
-
-  <script type="module">
-
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-  getAuth,
-  signInWithEmailAndPassword
-} from
-"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDRgRJ7eFcvKXJMgtUXwPWliu0DS3CvhhY",
-  authDomain: "kubota-crm.firebaseapp.com",
-  projectId: "kubota-crm",
-  storageBucket: "kubota-crm.firebasestorage.app",
-  messagingSenderId: "621683395275",
-  appId: "1:621683395275:web:182e0b425f83e620c4294e"
-};
-
-const app = initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-window.login = async function () {
-
-  const email =
-    document.getElementById("username").value
-    + "@kubota.local";
-
-  const password =
-    document.getElementById("password").value;
-
-  try {
-
-    const userCredential =
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-    alert("Login Success");
-
-    console.log(userCredential.user);
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(error.message);
-
-  }
-
-}
-
-console.log("Firebase Connected");
-
-</script>
 </script>
 </body></html>
 
