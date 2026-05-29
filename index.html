@@ -233,13 +233,19 @@ console.log("Firebase Connected");
     <div class="lsub">PANTRACTOR LTD.,PART</div>
     <div class="ltit">เข้าสู่ระบบ</div>
     <div class="lf"><label>ชื่อผู้ใช้</label><input type="text" id="lU" placeholder="username" autocomplete="username"></div>
-    <div class="lf"><label>รหัสผ่าน</label><input type="password" id="lP" placeholder="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()"></div>
+    <div class="lf">
+      <label>รหัสผ่าน</label>
+      <div style="position:relative">
+        <input type="password" id="lP" placeholder="password (อย่างน้อย 6 ตัว)" autocomplete="current-password" onkeydown="if(event.key==='Enter')tryLogin()" style="width:100%;padding:10px 40px 10px 12px;border:1.5px solid #ddd;border-radius:8px;font-size:14px">
+        <button type="button" onclick="var i=document.getElementById('lP');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'👁':' 🙈'" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;padding:0">👁</button>
+      </div>
+    </div>
     <button class="lbtn" onclick="tryLogin()">เข้าสู่ระบบ</button>
     <div class="lerr" id="lErr"></div>
     <div class="hint">
-      <span class="rb rba">Admin</span> admin / <em>รหัสที่ตั้งใน Firebase Auth</em><br>
-      <span class="rb rbs">Sale</span> sale / <em>รหัสที่ตั้งใน Firebase Auth</em><br>
-      <span class="rb rbv">Viewer</span> viewer / <em>รหัสที่ตั้งใน Firebase Auth</em>
+      username: <b>admin</b> / <b>sale</b> / <b>viewer</b><br>
+      password: ใช้รหัสที่สร้างใน Firebase Auth<br>
+      <span style="color:#c0392b;font-size:11px">⚠ ต้องเพิ่ม domain ใน Firebase Auth → Authorized Domains</span>
     </div>
   </div>
 </div>
@@ -455,8 +461,17 @@ window.tryLogin=async function(){
   }catch(err){
     showLoading(false);
     var e=document.getElementById('lErr');
-    e.textContent=err.code==='auth/wrong-password'||err.code==='auth/invalid-credential'?'รหัสผ่านไม่ถูกต้อง':'เข้าสู่ระบบไม่สำเร็จ: '+err.code;
-    setTimeout(function(){e.textContent='';},3000);
+    var msg='เข้าสู่ระบบไม่สำเร็จ';
+    if(err.code==='auth/wrong-password'||err.code==='auth/invalid-credential')msg='รหัสผ่านไม่ถูกต้อง';
+    else if(err.code==='auth/user-not-found')msg='ไม่พบผู้ใช้นี้ใน Firebase Auth';
+    else if(err.code==='auth/invalid-email')msg='อีเมลไม่ถูกต้อง';
+    else if(err.code==='auth/network-request-failed')msg='ไม่สามารถเชื่อมต่อ Firebase ได้ (ตรวจสอบ Authorized Domains)';
+    else if(err.code==='auth/unauthorized-domain')msg='Domain นี้ยังไม่ได้รับอนุญาต — กรุณาเพิ่มใน Firebase Auth → Authorized Domains';
+    else msg='ผิดพลาด: '+err.code;
+    e.style.color='#c0392b';
+    e.textContent=msg;
+    console.error('Firebase Auth Error:', err.code, err.message);
+    setTimeout(function(){e.textContent='';},6000);
   }
 };
 window.doOut=async function(){
@@ -637,17 +652,7 @@ window.doCSV=function(){
   var rows=custs.map(function(c){var mp=(c.cart||[]).map(function(x){return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')';}).join('|');var ap=(c.accCart||[]).map(function(x){return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')';}).join('|');var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){return s+x.p*x.q;},0);return[c.name,c.date||'',c.tel||'',c.line||'',c.fb||'',mp,ap,tot?fmt(tot):'',c.income||'',ST[c.status||0],c.followup||'',c.note||''].map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');});
   var a=document.createElement('a');a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent([h.join(',')].concat(rows).join('\n'));a.download='kubota_'+today()+'.csv';a.click();showT('t1','Export CSV แล้ว ✓');
 };
-window.doPrint=function(){
-  if(!custs.length){showT('t1','ไม่มีข้อมูล',true);return;}
-  var rows=custs.slice().reverse().map(function(c){var mp=(c.cart||[]).map(function(x){return xss(x.n)+'x'+x.q;}).join(', ');var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){return s+x.p*x.q;},0);return'<tr><td>'+xss(c.name)+'</td><td>'+(c.date||'')+'</td><td>'+(c.tel||'')+'</td><td>'+mp+'</td><td>'+(tot?fmt(tot):'')+'</td><td>'+ST[c.status||0]+'</td></tr>';}).join('');
-  var w=window.open('','_blank');w.document.write('<html><head><title>KUBOTA PANTRACTOR</title><style>body{font-family:sans-serif;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 8px}th{background:#fff0eb;color:#C73D08}h2{color:#E8470A;margin-bottom:10px}</style></head><body><h2>ลูกค้า KUBOTA PANTRACTOR ('+custs.length+' ราย) - '+today()+'</h2><table><thead><tr><th>ชื่อ</th><th>วันที่</th><th>เบอร์</th><th>สินค้า</th><th>รวมราคา</th><th>สถานะ</th></tr></thead><tbody>'+rows+'</tbody></table>
-<div id="fbLoading" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px">
-  <div style="width:48px;height:48px;border:4px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite"></div>
-  <div style="color:#fff;font-size:14px;font-family:sans-serif">กำลังเชื่อมต่อ Firebase...</div>
-</div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-</body></html>');w.document.close();w.print();
-};
+window.doPrint=function(){if(!custs.length){showT('t1','ไม่มีข้อมูล',true);return;}var rows=custs.slice().reverse().map(function(c){var mp=(c.cart||[]).map(function(x){return xss(x.n)+'x'+x.q;}).join(', ');var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){return s+x.p*x.q;},0);return'<tr><td>'+xss(c.name)+'</td><td>'+(c.date||'')+'</td><td>'+(c.tel||'')+'</td><td>'+mp+'</td><td>'+(tot?fmt(tot):'')+'</td><td>'+ST[c.status||0]+'</td></tr>';}).join('');var w=window.open('','_blank');w.document.write('<html><head><title>KUBOTA PANTRACTOR</title><style>body{font-family:sans-serif;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 8px}th{background:#fff0eb;color:#C73D08}h2{color:#E8470A;margin-bottom:10px}</style></head><body><h2>'+xss('ลูกค้า KUBOTA PANTRACTOR')+'</h2><p style="font-size:11px;color:#888;margin-bottom:8px">('+custs.length+' ราย) - '+today()+'</p><table><thead><tr><th>ชื่อ</th><th>วันที่</th><th>เบอร์</th><th>สินค้า</th><th>รวมราคา</th><th>สถานะ</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>');w.document.close();w.print();};
 
 function renderAdmin(){
   var h='<div class="adm-sec">&#128668; จัดการสินค้าหลัก</div>';
@@ -698,6 +703,5 @@ document.getElementById('fDate').value=today();
 </div>
 <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 </body></html>
-
 
 
