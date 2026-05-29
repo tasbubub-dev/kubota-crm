@@ -374,13 +374,23 @@ window.adjA=function(n,d){ if(accCart[n]) accCart[n].q=Math.max(1,accCart[n].q+d
 window.delA=function(n){ delete accCart[n]; renderAS(); renderCW(); };
 
 // ===== CUSTOMER LIST =====
+function normSearch(v){ return String(v||'').toLowerCase().replace(/\s+/g,' ').trim(); }
+function digitsOnly(v){ return String(v||'').replace(/\D/g,''); }
+function customerMatches(c,q,qDigits){
+  if(!q)return true;
+  var items=(c.cart||[]).concat(c.accCart||[]);
+  var fields=[c.name,c.tel,c.line,c.fb,c.income,c.note,c.followup,ST[c.status||0]]
+    .concat(items.map(function(x){ return [x.n,x.sub,x.p].filter(Boolean).join(' '); }));
+  return fields.some(function(f){
+    var text=normSearch(f);
+    return text.includes(q)||(qDigits&&digitsOnly(text).includes(qDigits));
+  });
+}
 function renderList(){
-  var q=(document.getElementById('srch').value||'').toLowerCase(), sf=document.getElementById('fSt').value;
+  var q=normSearch(document.getElementById('srch').value), qDigits=digitsOnly(q), sf=document.getElementById('fSt').value;
   var canEdit=USERS[me]&&USERS[me].role!=='viewer';
   var list=custs.slice().filter(function(c){
-    var pn=(c.cart||[]).map(function(x){ return x.n; }).concat((c.accCart||[]).map(function(x){ return x.n; }));
-    var m=!q||[c.name,c.tel,c.income].concat(pn).some(function(f){ return f&&String(f).toLowerCase().includes(q); });
-    return m&&(sf===''||String(c.status||0)===sf);
+    return customerMatches(c,q,qDigits)&&(sf===''||String(c.status||0)===sf);
   }).reverse();
   var el=document.getElementById('listW');
   if(!list.length){ el.innerHTML='<div class="empty">'+(custs.length?'\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25':'\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32')+'</div>'; return; }
@@ -390,6 +400,7 @@ function renderList(){
     return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+(canEdit?'<div style="display:flex;gap:5px"><button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button><button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button></div>':'')+'</div></div>';
   }).join('');
 }
+window.renderList = renderList;
 
 window.clearForm=function(){
   ['fName','fTel','fLine','fFb','fInc','fNote','fFol'].forEach(function(id){ var e=document.getElementById(id); if(e){ e.value=''; delete e.dataset.eid; } });
@@ -795,13 +806,23 @@ window.delP=function(n){delete cart[n];renderPS();renderCW();};
 window.adjA=function(n,d){if(accCart[n])accCart[n].q=Math.max(1,accCart[n].q+d);renderCW();};
 window.delA=function(n){delete accCart[n];renderAS();renderCW();};
 
+function normSearch(v){return String(v||'').toLowerCase().replace(/\s+/g,' ').trim();}
+function digitsOnly(v){return String(v||'').replace(/\D/g,'');}
+function customerMatches(c,q,qDigits){
+  if(!q)return true;
+  var items=(c.cart||[]).concat(c.accCart||[]);
+  var fields=[c.name,c.tel,c.line,c.fb,c.income,c.note,c.followup,ST[c.status||0]]
+    .concat(items.map(function(x){return [x.n,x.sub,x.p].filter(Boolean).join(' ');}));
+  return fields.some(function(f){
+    var text=normSearch(f);
+    return text.includes(q)||(qDigits&&digitsOnly(text).includes(qDigits));
+  });
+}
 window.renderList = function renderList(){
-  var q=(document.getElementById('srch').value||'').toLowerCase(),sf=document.getElementById('fSt').value;
+  var q=normSearch(document.getElementById('srch').value),qDigits=digitsOnly(q),sf=document.getElementById('fSt').value;
   var canEdit=USERS[me]&&USERS[me].role!=='viewer';
   var list=custs.slice().filter(function(c){
-    var pn=(c.cart||[]).map(function(x){return x.n;}).concat((c.accCart||[]).map(function(x){return x.n;}));
-    var m=!q||[c.name,c.tel,c.income].concat(pn).some(function(f){return f&&String(f).toLowerCase().includes(q);});
-    return m&&(sf===''||String(c.status||0)===sf);
+    return customerMatches(c,q,qDigits)&&(sf===''||String(c.status||0)===sf);
   }).reverse();
   var el=document.getElementById('listW');
   if(!list.length){el.innerHTML='<div class="empty">'+(custs.length?'ไม่พบข้อมูล':'ยังไม่มีข้อมูลลูกค้า<br>กด "เพิ่มลูกค้า" เพื่อเริ่มบันทึก')+'</div>';return;}
@@ -913,8 +934,10 @@ window.addAcc=function(grp){var kk='acc_'+grp.replace(/\W/g,'_');var n=(document
 window.addAccGrp=function(){var n=(document.getElementById('newAccGrp')?.value||'').trim();if(!n){showT('t3','กรุณากรอกชื่อกลุ่ม',true);return;}if(adb[n]){showT('t3','มีกลุ่มนี้อยู่แล้ว',true);return;}adb[n]=[];saveAcc();renderAdmin();renderAS();showT('t3','สร้างกลุ่มแล้ว ✓');};
 window.resetAll=function(){if(!confirm('รีเซ็ตสินค้าและอุปกรณ์ทั้งหมดเป็นค่าเริ่มต้น?'))return;pdb=JSON.parse(JSON.stringify(DP));adb=JSON.parse(JSON.stringify(DA_DEF));selMC=null;selGrp='';selSer='';selAG='';saveProds();saveAcc();renderAdmin();renderPS();renderAS();showT('t3','รีเซ็ตแล้ว ✓');};
 
+var srchEl=document.getElementById('srch'),fStEl=document.getElementById('fSt');
+if(srchEl)srchEl.addEventListener('input',function(){if(window.renderList)window.renderList();});
+if(fStEl)fStEl.addEventListener('change',function(){if(window.renderList)window.renderList();});
 document.getElementById('fDate').value=today();
 </script>
 </body></html>
-
 
