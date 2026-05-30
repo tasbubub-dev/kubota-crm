@@ -771,7 +771,7 @@ function renderPS(){
 function renderPG(items,ck){
   var c=ck==='c'?cart:accCart,ico=ck==='c'?'&#128668;':'&#9881;';
   if(!items||!items.length)return'<div style="font-size:12px;color:#aaa;padding:10px">ยังไม่มีสินค้า</div>';
-  return'<div class="pgrid">'+items.map(function(p){return'<button class="pi'+(c[p.n]?' sel':'')+'" onclick="'+(ck==='c'?'togP':'togA')+'(\''+p.n.replace(/'/g,"\'")+'\','+p.p+',\''+(p.img||'').replace(/'/g,"\'")+'\')"><div class="pck">&#10003;</div>'+(p.img?'<img src="'+p.img+'" alt="'+xss(p.n)+'" onerror="this.style.display=\'none\'"><div class="ph" style="display:none">'+ico+'</div>':'<div class="ph">'+ico+'</div>')+'<div class="pb"><div class="pn">'+xss(p.n)+'</div>'+(p.sub?'<div class="psub">'+xss(p.sub)+'</div>':'')+'<div class="pp">'+fmt(p.p)+'</div></div></button>';}).join('')+'</div>';
+  return'<div class="pgrid">'+items.filter(function(p){return p.img;}).map(function(p){return'<button class="pi'+(c[p.n]?' sel':'')+'\" onclick=\"'+(ck==='c'?'togP':'togA')+'(\''+p.n.replace(/'/g,"\\'")+'\','+p.p+',\''+(p.img||'').replace(/'/g,"\\'")+'\')"><div class="pck">&#10003;</div><img src="'+p.img+'" alt="'+xss(p.n)+'" onerror="this.parentNode.style.display=\'none\'"><div class="pb"><div class="pn">'+xss(p.n)+'</div>'+(p.sub?'<div class="psub">'+xss(p.sub)+'</div>':'')+'<div class="pp">'+fmt(p.p)+'</div></div></button>';}).join('')+'</div>';
 }
 window.setMC=function(k){selMC=k;selGrp='';selSer='';renderPS();};
 window.setGrp=function(g){selGrp=g;selSer='';renderPS();};
