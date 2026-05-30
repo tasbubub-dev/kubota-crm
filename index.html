@@ -228,7 +228,7 @@ let USER_EMAIL = {};
 document.getElementById('logoL').src = LOGO;
 
 // ===== LOADING OVERLAY =====
-window.showLoading = function showLoading(on){ var el=document.getElementById('fbLoading'); if(el) el.style.display=on?'flex':'none'; }
+window.showLoading = window.showLoading = function showLoading(on){ var el=document.getElementById('fbLoading'); if(el) el.style.display=on?'flex':'none'; }
 
 // ===== APP DATA =====
 const DEFAULT_USERS = {
@@ -270,11 +270,11 @@ const DA_DEF = {
 
 let me=null, custs=[], pdb={}, adb={}, selMC=null, selGrp='', selSer='', selAG='', cart={}, accCart={};
 
-window.xss = function xss(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-window.fmt = function fmt(n){ return '\u0e3f'+Number(n||0).toLocaleString(); }
-window.today = function today(){ return new Date().toISOString().split('T')[0]; }
-window.showT = function showT(id,msg,err){ var e=document.getElementById(id); if(!e)return; e.textContent=msg; e.style.background=err?'#c0392b':'#E8470A'; e.classList.add('on'); setTimeout(function(){e.classList.remove('on');},2500); }
-window.updTel = function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
+window.xss = window.xss = function xss(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+window.fmt = window.fmt = function fmt(n){ return '\u0e3f'+Number(n||0).toLocaleString(); }
+window.today = window.today = function today(){ return new Date().toISOString().split('T')[0]; }
+window.showT = window.showT = function showT(id,msg,err){ var e=document.getElementById(id); if(!e)return; e.textContent=msg; e.style.background=err?'#c0392b':'#E8470A'; e.classList.add('on'); setTimeout(function(){e.classList.remove('on');},2500); }
+window.updTel = window.updTel = function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
 function basePerm(role){
   return JSON.parse(JSON.stringify((DEFAULT_USERS[role]||DEFAULT_USERS.sale).perms));
 }
@@ -428,7 +428,7 @@ window.renderAS = function(){
 window.setAG=function(g){ selAG=g; renderAS(); };
 window.togA=function(n,p,img){ if(accCart[n]) delete accCart[n]; else accCart[n]={n:n,p:p,q:1,img:img}; renderAS(); renderCW(); };
 
-window.ciRow = function ciRow(it,t){
+window.ciRow = window.ciRow = function ciRow(it,t){
   var isA=t==='a', qc=isA?' g':'', pc=isA?' g':'', ico=isA?'&#9881;':'&#128668;';
   return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">':'<div class="ciph">'+ico+'</div>')+'<div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
 }
@@ -589,11 +589,14 @@ window.doPDF=function(){
   var data=exportRows();
   if(!data.rows.length){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25',true); return; }
   var head=data.fields.map(function(f){ return '<th>'+xss(f.l)+'</th>'; }).join('');
-  var rows=data.rows.slice().reverse().map(function(c){ return '<tr>'+data.fields.map(function(f){ return '<td>'+xss(f.v(c))+'</td>'; }).join('')+'</tr>'; }).join('');
+  var rows=data.rows.slice().reverse().map(function(c){ return '<tr>'+data.fields.map(function(f){ return '<td>'+xss(String(f.v(c)||''))+'</td>'; }).join('')+'</tr>'; }).join('');
+  var css='@page{size:A4 landscape;margin:10mm}body{font-family:sans-serif;font-size:10px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 6px}th{background:#fff0eb;color:#C73D08}h2{color:#E8470A;margin-bottom:10px}';
+  var html='<!DOCTYPE html><html><head><title>KUBOTA PANTRACTOR</title><style>'+css+'</style></head><body><h2>KUBOTA PANTRACTOR ('+data.rows.length+' \u0e23\u0e32\u0e22) - '+today()+'</h2><table><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table></body></html>';
   var w=window.open('','_blank');
-  w.document.write('<html><head><title>KUBOTA PANTRACTOR</title><style>@page{size:A4 landscape;margin:10mm}body{font-family:sans-serif;font-size:10px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 6px;vertical-align:top}th{background:#fff0eb;color:#C73D08}h2{color:#E8470A;margin-bottom:10px}</style></head><body><h2>KUBOTA PANTRACTOR ('+data.rows.length+' \u0e23\u0e32\u0e22) - '+today()+'</h2><table><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table><script>window.onload=function(){setTimeout(function(){window.print()},250)}<\/script></body></html>');
+  w.document.write(html);
   w.document.close();
-};
+  setTimeout(function(){ w.print(); },300);
+}
 window.doPrint=window.doPDF;
 
 // ===== ADMIN =====
@@ -732,36 +735,82 @@ window.renderAdmin = function(){
 }
 window.renderSystem = function(){
   var el=document.getElementById('sysW');
-  if(!canManageUsers()){ el.innerHTML='<div class="empty">ไม่มีสิทธิ์จัดการระบบ</div>'; return; }
+  if(!el) return;
+  if(!canManageUsers()){ el.innerHTML='<div class="empty">\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e23\u0e30\u0e1a\u0e1a</div>'; return; }
   var userKeys=Object.keys(USERS);
-  var ownerOptions=userKeys.map(function(k){ return '<option value="'+xss(k)+'">'+xss(userLabel(k))+'</option>'; }).join('');
-  var h='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128272; จัดการ User และสิทธิ์</div>';
-  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:14px;margin-bottom:12px;background:#FFF0EB">';
-  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="sale2"></div><div class="fg"><label>ชื่อที่แสดง</label><input id="nuName" placeholder="ชื่อพนักงาน"></div><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app"></div><div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="อย่างน้อย 6 ตัว"></div><div class="fg"><label>สิทธิหลัก</label><select id="nuRole"><option value="sale">User ทั่วไป</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div><div class="fg"><label>เพิ่มลูกค้า</label><select id="nuAdd"><option value="1">ทำได้</option><option value="0">ไม่ได้</option></select></div></div>';
-  h+='<div class="g2"><div class="fg"><label>ดูข้อมูลของใคร</label><select id="nuViewScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div><div class="fg"><label>แก้ไขข้อมูลของใคร</label><select id="nuEditScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div></div>';
-  h+='<div style="font-size:11px;color:#666;margin:8px 0 4px">เลือกเจ้าของข้อมูลที่อนุญาต เมื่อใช้โหมด "เลือกเจ้าของข้อมูล"</div>';
-  h+='<select id="nuViewUsers" multiple style="width:100%;min-height:74px;padding:6px;border:1px solid #ddd;border-radius:8px;margin-bottom:6px">'+ownerOptions+'</select>';
-  h+='<select id="nuEditUsers" multiple style="width:100%;min-height:74px;padding:6px;border:1px solid #ddd;border-radius:8px">'+ownerOptions+'</select>';
-  h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0"><label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> แก้ไขได้</label><label style="font-size:12px"><input type="checkbox" id="nuDel" checked> ลบได้</label><label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export ได้</label><label style="font-size:12px"><input type="checkbox" id="nuProd"> จัดการสินค้า</label><label style="font-size:12px"><input type="checkbox" id="nuUsers"> จัดการ User</label></div>';
-  h+='<button class="bsave" onclick="window.addUser()">&#43; สร้าง User</button></div>';
-  h+='<div style="border:1.5px solid #ddd;border-radius:10px;background:#fff;margin-bottom:14px;overflow:hidden">';
+  var ownerVChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
+  var ownerEChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
+  var fld='width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff';
+  var h='';
+  h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128100; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</div>';
+  // ===== CREATE USER FORM =====
+  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:16px;margin-bottom:16px;background:#FFF0EB">';
+  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="\u0e40\u0e0a\u0e48\u0e19 sale2" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div></div>';
+  h+='<div class="g2"><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div></div>';
+  h+='<div class="g2"><div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>';
+  h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div></div>';
+  h+='<div class="g2"><div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>';
+  h+='<div class="fg"><label>\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuEditScope" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div></div>';
+  h+='<div style="font-size:11px;color:#666;margin:6px 0 4px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e17\u0e35\u0e48\u0e2d\u0e19\u0e38\u0e0d\u0e32\u0e15 \u0e40\u0e21\u0e37\u0e48\u0e2d\u0e43\u0e0a\u0e49\u0e42\u0e2b\u0e21\u0e14 "\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25"</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px">\u0e14\u0e39: '+ownerVChks+'</div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px">\u0e41\u0e01\u0e49: '+ownerEChks+'</div>';
+  h+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:14px">';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuDel" checked> \u0e25\u0e1a\u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export \u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuProd"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuUsers"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label></div>';
+  h+='<button onclick="window.addUser()" style="background:#E8470A;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer">&#43; \u0e2a\u0e23\u0e49\u0e32\u0e07 User</button>';
+  h+='</div>';
+  // ===== USER LIST =====
+  h+='<div style="font-size:13px;font-weight:700;color:#333;margin-bottom:8px">&#128101; User \u0e17\u0e35\u0e48\u0e21\u0e35\u0e2d\u0e22\u0e39\u0e48</div>';
+  h+='<div style="border:1.5px solid #ddd;border-radius:10px;background:#fff;overflow:hidden;margin-bottom:12px">';
   h+=userKeys.map(function(k){
-    var u=USERS[k], p=u.perms||{}, opts=userKeys.filter(function(x){return x!==k;}).map(function(o){ return '<option value="'+xss(o)+'">'+xss(userLabel(o))+'</option>'; }).join('');
-    return '<div style="padding:10px 12px;border-bottom:1px solid #eee"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>'+xss(k)+'</b> '+(RLBL[u.role]||RLBL.sale)+'<div style="font-size:11px;color:#888">'+xss(u.name)+' &middot; '+xss(u.email||'')+'</div></div><button class="bic bdl" onclick="window.delUser(\''+k.replace(/'/g,"\\'")+'\')">&#128465;</button></div>'
-    +'<div class="g2" style="margin-top:8px"><div class="fg"><label>ชื่อ</label><input id="un_'+k+'" value="'+xss(u.name)+'"></div><div class="fg"><label>สิทธิหลัก</label><select id="ur_'+k+'"><option value="sale" '+(u.role==='sale'?'selected':'')+'>User ทั่วไป</option><option value="viewer" '+(u.role==='viewer'?'selected':'')+'>Viewer</option><option value="admin" '+(u.role==='admin'?'selected':'')+'>Admin</option></select></div><div class="fg"><label>ดูข้อมูล</label><select id="uvs_'+k+'"><option value="own" '+(p.viewScope==='own'?'selected':'')+'>เฉพาะตัวเอง</option><option value="selected" '+(p.viewScope==='selected'?'selected':'')+'>เลือกเจ้าของข้อมูล</option><option value="all" '+(p.viewScope==='all'?'selected':'')+'>ทั้งหมด</option></select></div><div class="fg"><label>แก้ข้อมูล</label><select id="ues_'+k+'"><option value="own" '+(p.editScope==='own'?'selected':'')+'>เฉพาะตัวเอง</option><option value="selected" '+(p.editScope==='selected'?'selected':'')+'>เลือกเจ้าของข้อมูล</option><option value="all" '+(p.editScope==='all'?'selected':'')+'>ทั้งหมด</option></select></div></div>'
-    +'<div class="g2"><div class="fg"><label>เจ้าของข้อมูลที่ดูได้</label><select id="vu_'+k+'" multiple>'+opts+'</select></div><div class="fg"><label>เจ้าของข้อมูลที่แก้ได้</label><select id="eu_'+k+'" multiple>'+opts+'</select></div></div>'
-    +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><label style="font-size:11px"><input type="checkbox" id="pa_'+k+'" '+(p.canAdd?'checked':'')+'> เพิ่ม</label><label style="font-size:11px"><input type="checkbox" id="pe_'+k+'" '+(p.canEdit?'checked':'')+'> แก้ไข</label><label style="font-size:11px"><input type="checkbox" id="pd_'+k+'" '+(p.canDelete?'checked':'')+'> ลบ</label><label style="font-size:11px"><input type="checkbox" id="px_'+k+'" '+(p.canExport?'checked':'')+'> Export</label><label style="font-size:11px"><input type="checkbox" id="pp_'+k+'" '+(p.canProducts?'checked':'')+'> สินค้า</label><label style="font-size:11px"><input type="checkbox" id="pu_'+k+'" '+(p.canUsers?'checked':'')+'> User</label><button class="bic" onclick="window.updUser(\''+k.replace(/'/g,"\\'")+'\')">&#128190; บันทึกสิทธิ์</button></div></div>';
+    var u=USERS[k], p=u.perms||{}, isAdmin=(k==='admin');
+    var ko=userKeys.filter(function(x){return x!==k;});
+    var vC=ko.map(function(o){ return '<label style="font-size:11px;white-space:nowrap"><input type="checkbox" class="vu_'+k+'" value="'+xss(o)+'"> '+xss(userLabel(o))+'</label>'; }).join(' ');
+    var eC=ko.map(function(o){ return '<label style="font-size:11px;white-space:nowrap"><input type="checkbox" class="eu_'+k+'" value="'+xss(o)+'"> '+xss(userLabel(o))+'</label>'; }).join(' ');
+    var sf='width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:7px;font-size:12px;background:#fff';
+    return '<div style="padding:12px 14px;border-bottom:1px solid #eee">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">'
+      +'<div><strong style="font-size:13px">'+xss(k)+'</strong> <span style="font-size:11px;color:#888">('+xss(u.email)+')</span></div>'
+      +(isAdmin?'<span style="font-size:11px;color:#aaa">admin \u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</span>'
+        :'<button onclick="window.delUser(\''+k+'\')" style="background:none;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">&#128465; \u0e25\u0e1a</button>')+'</div>'
+      +'<div class="g2" style="margin-bottom:6px">'
+      +'<div class="fg"><label style="font-size:11px">\u0e0a\u0e37\u0e48\u0e2d</label><input id="un_'+k+'" value="'+xss(u.name||k)+'" style="'+sf+'"></div>'
+      +'<div class="fg"><label style="font-size:11px">\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="ur_'+k+'" style="'+sf+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>'
+      +'</div>'
+      +'<div class="g2" style="margin-bottom:6px">'
+      +'<div class="fg"><label style="font-size:11px">\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="uvs_'+k+'" style="'+sf+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>'
+      +'<div class="fg"><label style="font-size:11px">\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="ues_'+k+'" style="'+sf+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>'
+      +'</div>'
+      +(ko.length?'<div style="font-size:11px;color:#666;margin:4px 0">\u0e14\u0e39: '+vC+' | \u0e41\u0e01\u0e49: '+eC+'</div>':'')
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px">'
+      +'<label style="font-size:11px"><input type="checkbox" id="pa_'+k+'"> \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e44\u0e14\u0e49</label>'
+      +'<label style="font-size:11px"><input type="checkbox" id="pe_'+k+'"> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>'
+      +'<label style="font-size:11px"><input type="checkbox" id="pd_'+k+'"> \u0e25\u0e1a\u0e44\u0e14\u0e49</label>'
+      +'<label style="font-size:11px"><input type="checkbox" id="px_'+k+'"> Export \u0e44\u0e14\u0e49</label>'
+      +'<label style="font-size:11px"><input type="checkbox" id="pp_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</label>'
+      +'<label style="font-size:11px"><input type="checkbox" id="pu_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label></div>'
+      +(isAdmin?'':'<button onclick="window.updUser(\''+k+'\')" style="background:#E8470A;color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:12px;cursor:pointer">&#128190; \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01</button>')
+      +'</div>';
   }).join('');
   h+='</div>';
   el.innerHTML=h;
+  // Restore values
   userKeys.forEach(function(k){
-    var p=USERS[k].perms||{};
-    ['vu','eu'].forEach(function(prefix){
-      var sel=document.getElementById(prefix+'_'+k), vals=prefix==='vu'?(p.viewUsers||[]):(p.editUsers||[]);
-      if(sel) Array.from(sel.options).forEach(function(o){ o.selected=vals.indexOf(o.value)>-1; });
-    });
+    var u=USERS[k], p=u.perms||{};
+    var rs=document.getElementById('ur_'+k); if(rs) rs.value=u.role||'sale';
+    var vs=document.getElementById('uvs_'+k); if(vs) vs.value=p.viewScope||'own';
+    var es=document.getElementById('ues_'+k); if(es) es.value=p.editScope||'own';
+    var bx={pa_:!!p.canAdd,pe_:!!p.canEdit,pd_:!!p.canDelete,px_:!!p.canExport,pp_:!!p.canProducts,pu_:!!p.canUsers};
+    Object.keys(bx).forEach(function(pfx){ var b=document.getElementById(pfx+k); if(b) b.checked=bx[pfx]; });
+    (p.viewUsers||[]).forEach(function(v){ var b=document.querySelector('.vu_'+k+'[value="'+v+'"]'); if(b) b.checked=true; });
+    (p.editUsers||[]).forEach(function(v){ var b=document.querySelector('.eu_'+k+'[value="'+v+'"]'); if(b) b.checked=true; });
   });
-};
+}
 function checkedVals(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(function(x){return x.value;}); }
 function selectedVals(id){ var el=document.getElementById(id); return el?Array.from(el.selectedOptions).map(function(x){return x.value;}):[]; }
 window.addUser=async function(){
@@ -773,7 +822,7 @@ window.addUser=async function(){
   var role=document.getElementById('nuRole').value||'sale';
   if(!k||!name||!email||pass.length<6){ showT('t4','กรอก Username, ชื่อ, Email และ Password อย่างน้อย 6 ตัว',true); return; }
   if(USERS[k]){ showT('t4','Username นี้มีอยู่แล้ว',true); return; }
-  // สร้าง permissions
+  // build perms
   var p=basePerm(role);
   p.canAdd=document.getElementById('nuAdd').value==='1';
   p.canEdit=document.getElementById('nuEdit').checked;
@@ -783,28 +832,27 @@ window.addUser=async function(){
   p.canUsers=document.getElementById('nuUsers').checked;
   p.viewScope=document.getElementById('nuViewScope').value;
   p.editScope=document.getElementById('nuEditScope').value;
-  p.viewUsers=selectedVals('nuViewUsers');
-  p.editUsers=selectedVals('nuEditUsers');
-  // บันทึก user ใน USERS + USER_EMAIL ก่อน เพื่อป้องกัน onAuthStateChanged logout admin
+  p.viewUsers=checkedVals('nuVU');
+  p.editUsers=checkedVals('nuEU');
+  // save to USERS + Firestore FIRST to prevent onAuthStateChanged logout
   USERS[k]={email:email,role:role,name:name,perms:p};
   rebuildUserEmail();
-  // บันทึกลง Firestore ก่อน
-  try{ await saveUsers(); }catch(e){ showT('t4','บันทึกสิทธิ์ไม่สำเร็จ: '+e.code,true); console.error('saveUsers',e); return; }
-  // สร้าง Firebase Auth account
+  try{ await saveUsers(); }catch(e){ showT('t4','บันทึกสิทธิ์ไม่สำเร็จ: '+(e.code||e),true); return; }
+  // create Firebase Auth account
   var authStatus='created';
   try{
     await setPersistence(userAuth, inMemoryPersistence);
     await createUserWithEmailAndPassword(userAuth,email,pass);
     await signOut(userAuth);
   }catch(e){
-    if(e.code==='auth/email-already-in-use'){ authStatus='exists'; }
-    else if(e.code==='auth/operation-not-allowed'){ authStatus='no-auth'; }
-    else { authStatus='auth-err:'+e.code; }
+    if(e.code==='auth/email-already-in-use') authStatus='exists';
+    else if(e.code==='auth/operation-not-allowed') authStatus='no-auth';
+    else authStatus='err:'+e.code;
   }
   renderSystem();
   if(authStatus==='created') showT('t4','สร้าง User แล้ว ✓');
-  else if(authStatus==='exists') showT('t4','บันทึกสิทธิ์แล้ว (Email นี้มีใน Firebase Auth อยู่แล้ว) ✓');
-  else if(authStatus==='no-auth') showT('t4','บันทึกสิทธิ์แล้ว ✓ (สร้าง Auth ล้มเหลว: ยังไม่ได้เปิด Email/Password ใน Firebase Console)');
+  else if(authStatus==='exists') showT('t4','บันทึกสิทธิ์แล้ว (Email มีอยู่แล้ว) ✓');
+  else if(authStatus==='no-auth') showT('t4','บันทึกสิทธิ์แล้ว ✓ (ยังไม่ได้เปิด Email/Password ใน Firebase Console)');
   else showT('t4','บันทึกสิทธิ์แล้ว ✓ แต่สร้าง Auth ไม่สำเร็จ: '+authStatus,true);
 };
 window.updUser=async function(k){
@@ -814,8 +862,8 @@ window.updUser=async function(k){
   u.role=role;
   p.viewScope=document.getElementById('uvs_'+k).value;
   p.editScope=document.getElementById('ues_'+k).value;
-  p.viewUsers=selectedVals('vu_'+k);
-  p.editUsers=selectedVals('eu_'+k);
+  p.viewUsers=checkedVals('vu_'+k);
+  p.editUsers=checkedVals('eu_'+k);
   p.canAdd=document.getElementById('pa_'+k).checked;
   p.canEdit=document.getElementById('pe_'+k).checked;
   p.canDelete=document.getElementById('pd_'+k).checked;
