@@ -188,22 +188,19 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f0f0;color:#222;min-h
 .badd:hover{background:#C73D08}
 .badd.g{background:#1a7c3e}.badd.g:hover{background:#155f30}
 
-/* ===== DRAG & DROP ===== */
-.prow{ cursor:default; transition:background .15s; }
-.prow.dragging{ opacity:.4; background:var(--orl,#FFF0EB); }
-.prow.drag-over{ border-top:2px solid #E8470A; }
-.prow .drag-handle{
-  cursor:grab; padding:0 6px; color:#bbb; font-size:16px;
-  display:inline-flex; align-items:center; user-select:none; flex-shrink:0;
-}
-.prow .drag-handle:active{ cursor:grabbing; }
-.move-btn{
-  background:none; border:0.5px solid #ddd; border-radius:4px;
-  cursor:pointer; color:#888; font-size:12px; padding:2px 5px;
-  line-height:1; flex-shrink:0;
-}
-.move-btn:hover{ background:#f5f5f5; color:#E8470A; border-color:#E8470A; }
-
+.prow{ display:flex; align-items:center; gap:5px; padding:4px 0; border-bottom:0.5px dashed #ddd; }
+.prow:last-child{ border-bottom:none; }
+.prow.dragging{ opacity:.35; background:#fff0eb; }
+.prow.drag-over{ border-top:2px solid #E8470A !important; }
+.drag-handle{ cursor:grab; color:#ccc; font-size:15px; flex-shrink:0; padding:0 4px; line-height:1; user-select:none; }
+.drag-handle:active{ cursor:grabbing; color:#E8470A; }
+.move-btn{ background:none; border:1px solid #ddd; border-radius:4px; cursor:pointer; color:#aaa; font-size:11px; padding:2px 5px; line-height:1; flex-shrink:0; }
+.move-btn:hover{ background:#fff0eb; color:#E8470A; border-color:#E8470A; }
+.prn{ flex:1; font-size:11px; color:#333; font-weight:500; min-width:0; }
+.prsub{ font-size:9px; color:#888; }
+.prp input{ width:88px; padding:3px 5px; border:1px solid #ddd; border-radius:4px; font-size:11px; }
+.prp input:focus{ outline:none; border-color:#E8470A; }
+.prd{ background:none; border:none; cursor:pointer; color:#c0392b; font-size:13px; padding:1px; line-height:1; flex-shrink:0; }
 </style>
 </head>
   <script type="module">
@@ -270,7 +267,7 @@ window.showT = function showT(id,msg,err){ var e=document.getElementById(id); if
 window.updTel = function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
 
 // ===== FIREBASE DATA =====
-window.loadData = async function loadData(){
+window.loadData = async function(){
   showLoading(true);
   try{ var r1=await getDoc(doc(db,'kb_data','products')); pdb=r1.exists()?r1.data().value:JSON.parse(JSON.stringify(DP)); }catch(e){ pdb=JSON.parse(JSON.stringify(DP)); }
   try{ var r2=await getDoc(doc(db,'kb_data','accessories')); adb=r2.exists()?r2.data().value:JSON.parse(JSON.stringify(DA_DEF)); }catch(e){ adb=JSON.parse(JSON.stringify(DA_DEF)); }
@@ -278,9 +275,9 @@ window.loadData = async function loadData(){
   showLoading(false);
   renderPS(); renderAS(); refresh();
 }
-async function saveCusts(){ try{ await setDoc(doc(db,'kb_data','customers'),{list:custs}); }catch(e){ console.error('saveCusts',e); } }
-async function saveProds(){ try{ await setDoc(doc(db,'kb_data','products'),{value:pdb}); }catch(e){ console.error('saveProds',e); } }
-async function saveAcc(){   try{ await setDoc(doc(db,'kb_data','accessories'),{value:adb}); }catch(e){ console.error('saveAcc',e); } }
+window.saveCusts = async function(){ try{ await setDoc(doc(db,'kb_data','customers'),{list:custs}); }catch(e){ console.error('saveCusts',e); } }
+window.saveProds = async function(){ try{ await setDoc(doc(db,'kb_data','products'),{value:pdb}); }catch(e){ console.error('saveProds',e); } }
+window.saveAcc = async function(){   try{ await setDoc(doc(db,'kb_data','accessories'),{value:adb}); }catch(e){ console.error('saveAcc',e); } }
 
 // ===== AUTH =====
 window.tryLogin = async function(){
@@ -333,7 +330,7 @@ onAuthStateChanged(auth, function(user){
 });
 
 // ===== PRODUCT SELECTOR =====
-window.renderPS = function renderPS(){
+window.renderPS = function(){
   var mn={agri:'\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e32\u0e23\u0e40\u0e01\u0e29\u0e15\u0e23',const:'\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e48\u0e2d\u0e2a\u0e23\u0e49\u0e32\u0e07',innov:'\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e27\u0e31\u0e15\u0e01\u0e23\u0e23\u0e21'};
   var mi={agri:'&#127806;',const:'&#127959;',innov:'&#128161;'};
   var h='<div class="mcat-grid">'+['agri','const','innov'].map(function(k){ return '<button class="mcat-btn'+(selMC===k?' on':'')+'" onclick="setMC(\'' +k+'\')">'+'<span class="mci">'+mi[k]+'</span><span>'+mn[k]+'</span></button>'; }).join('')+'</div>';
@@ -361,7 +358,7 @@ window.setGrp=function(g){ selGrp=g; selSer=''; renderPS(); };
 window.setSer=function(s){ selSer=s; renderPS(); };
 window.togP=function(n,p,img){ if(cart[n]) delete cart[n]; else cart[n]={n:n,p:p,q:1,img:img}; renderPS(); renderCW(); };
 
-window.renderAS = function renderAS(){
+window.renderAS = function(){
   var grps=Object.keys(adb);
   var h='<div class="grp-row">'+grps.map(function(g){ return '<button class="grp-btn'+(selAG===g?' on':'')+'" onclick="setAG(\'' +g.replace(/'/g,"\\'")+'\')">' +xss(g)+'</button>'; }).join('')+'</div>';
   if(selAG&&adb[selAG]) h+=renderPG(adb[selAG],'a');
@@ -375,7 +372,7 @@ window.ciRow = function ciRow(it,t){
   var isA=t==='a', qc=isA?' g':'', pc=isA?' g':'', ico=isA?'&#9881;':'&#128668;';
   return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">'  :'')+'<div class="ciph">'+ico+'</div><div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
 }
-window.renderCW = function renderCW(){
+window.renderCW = function(){
   var mi=Object.values(cart), ai=Object.values(accCart);
   var mw=document.getElementById('mainCW'), aw=document.getElementById('accCW'), gw=document.getElementById('grandW');
   if(!mi.length) mw.innerHTML='';
@@ -442,7 +439,7 @@ window.delC=async function(id){
   custs=custs.filter(function(c){ return c.id!==id; }); await saveCusts(); refresh(); showT('t1','\u0e25\u0e1a\u0e41\u0e25\u0e49\u0e27',true);
 };
 
-window.refresh = function refresh(){
+window.refresh = function(){
   var t=today(), m=t.slice(0,7);
   document.getElementById('hC').textContent=custs.length+' \u0e23\u0e32\u0e22';
   document.getElementById('sA').textContent=custs.length;
@@ -459,7 +456,7 @@ window.goTab=function(name,idx){
   if(name==='add'&&!document.getElementById('fName').dataset.eid) document.getElementById('fDate').value=today();
 };
 
-window.renderFollow = function renderFollow(){
+window.renderFollow = function(){
   var t=today(), d7=new Date(); d7.setDate(d7.getDate()+7); var d7s=d7.toISOString().split('T')[0];
   var due=custs.filter(function(c){ return c.followup&&c.followup<=t&&c.status!=2&&c.status!=3; });
   var soon=custs.filter(function(c){ return c.followup&&c.followup>t&&c.followup<=d7s; });
@@ -469,7 +466,7 @@ window.renderFollow = function renderFollow(){
   document.getElementById('fSoon').innerHTML=soon.length?soon.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
   document.getElementById('fPend').innerHTML=pend.length?pend.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
 }
-window.renderPrev = function renderPrev(){
+window.renderPrev = function(){
   var el=document.getElementById('prevT');
   if(!custs.length){ el.innerHTML='<div style="font-size:13px;color:#aaa;padding:10px 0">\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</div>'; return; }
   var rows=custs.slice().reverse().slice(0,10);
@@ -492,162 +489,233 @@ window.doPrint=function(){
 };
 
 // ===== ADMIN =====
-window.renderAdmin = function renderAdmin(){
-  var h='<div class="adm-sec">&#128668; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e2b\u0e25\u0e31\u0e01</div>';
+window.renderAdmin = function(){
+  if(!pdb||!pdb.agri){ document.getElementById('admW').innerHTML='<div style="padding:20px;color:#888">กำลังโหลดข้อมูล...</div>'; return; }
+  var h='';
+  h+='<div style="font-size:13px;font-weight:600;color:#333;margin-bottom:10px;padding-bottom:7px;border-bottom:1.5px solid #eee">&#128668; จัดการสินค้าหลัก</div>';
   Object.keys(pdb.agri.groups).forEach(function(grp){
     var sers=Object.keys(pdb.agri.groups[grp]);
-    h+='<div class="ap ora"><div class="apt ora">&#127991; '+xss(grp)+'</div>';
+    h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:12px;margin-bottom:12px;background:#FFF0EB">';
+    h+='<div style="font-size:13px;font-weight:700;color:#C73D08;margin-bottom:8px">&#127991; '+xss(grp)+'</div>';
     sers.forEach(function(ser){
       var items=pdb.agri.groups[grp][ser]||[];
       var kk=(grp+ser).replace(/\W/g,'_');
-      h+='<div class="sdiv">'+xss(ser)+'</div>';
-      h+='<div id="dz_'+kk+'" class="drop-zone">';
-      h+=items.map(function(p,i){
-        var enc_g=encodeURIComponent(grp), enc_s=encodeURIComponent(ser);
-        return '<div class="prow" draggable="true" data-cat="agri" data-grp="'+enc_g+'" data-ser="'+enc_s+'" data-idx="'+i+'" '
-          +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
-          +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
-          +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
-          +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
-          +'<button class="move-btn" onclick="window.moveItem(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
-          +'<button class="move-btn" onclick="window.moveItem(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
-          +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updP(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',this.value)"></div>'
-          +'<button class="prd" onclick="window.delProd(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+')">&#128465;</button>'
-          +'</div></div>';
-      }).join('');
+      h+='<div style="font-size:11px;font-weight:700;color:#888;margin:6px 0 4px;padding-top:5px;border-top:1px dashed #ddd">'+xss(ser)+'</div>';
+      h+='<div>';
+      items.forEach(function(p,idx){
+        h+='<div class="prow" draggable="true"'
+          +' data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" data-i="'+idx+'"'
+          +' ondragstart="window.dStart(event)" ondragover="window.dOver(event)" ondragend="window.dEnd(event)" ondrop="window.dDrop(event)">';
+        h+='<span class="drag-handle" title="ลาก">&#8801;</span>';
+        h+='<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>';
+        h+='<button class="move-btn" data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" data-i="'+idx+'" data-dir="-1" onclick="window.mvBtn(this)">&#9650;</button>';
+        h+='<button class="move-btn" data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" data-i="'+idx+'" data-dir="1"  onclick="window.mvBtn(this)">&#9660;</button>';
+        h+='<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000"'
+          +' data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" data-i="'+idx+'"'
+          +' onchange="window.updPBtn(this)"></div>';
+        h+='<button class="prd" data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" data-i="'+idx+'" onclick="window.delPBtn(this)">&#128465;</button>';
+        h+='</div>';
+      });
       h+='</div>';
-      h+='<div class="apr"><input type="text" id="nn_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px">'
-        +'<input type="number" id="np_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000">'
-        +'<button class="badd" onclick="window.addProdA(\'agri\',\''+enc_g+'\',\''+enc_s+'\')">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div>';
+      h+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">'
+        +'<input type="text" id="nn_'+kk+'" placeholder="ชื่อสินค้าใหม่" style="flex:1;min-width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px">'
+        +'<input type="number" id="np_'+kk+'" placeholder="ราคา" style="width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px" min="0" step="1000">'
+        +'<button data-cat="agri" data-grp="'+encodeURIComponent(grp)+'" data-ser="'+encodeURIComponent(ser)+'" onclick="window.addPBtn(this)" style="background:#E8470A;color:#fff;border:none;padding:5px 14px;border-radius:7px;font-size:12px;cursor:pointer">+ เพิ่ม</button>'
+        +'</div>';
     });
     h+='</div>';
   });
-  [{k:'const',lbl:'&#127959; \u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e48\u0e2d\u0e2a\u0e23\u0e49\u0e32\u0e07'},{k:'innov',lbl:'&#128161; \u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e27\u0e31\u0e15\u0e01\u0e23\u0e23\u0e21'}].forEach(function(obj){
-    h+='<div class="ap ora"><div class="apt ora">'+obj.lbl+'</div>';
-    h+='<div id="dz_'+obj.k+'" class="drop-zone">';
-    h+=(pdb[obj.k].products||[]).map(function(p,i){
-      return '<div class="prow" draggable="true" data-cat="'+obj.k+'" data-grp="" data-ser="" data-idx="'+i+'" '
-        +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
-        +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
-        +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
-        +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
-        +'<button class="move-btn" onclick="window.moveItem(\''+obj.k+'\',\'\',\'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
-        +'<button class="move-btn" onclick="window.moveItem(\''+obj.k+'\',\'\',\'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
-        +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updP(\''+obj.k+'\',null,null,'+i+',this.value)"></div>'
-        +'<button class="prd" onclick="window.delProd(\''+obj.k+'\',null,null,'+i+')">&#128465;</button>'
-        +'</div></div>';
-    }).join('');
+  [{k:'const',lbl:'&#127959; เครื่องจักรกลก่อสร้าง'},{k:'innov',lbl:'&#128161; สินค้านวัตกรรมการเกษตร'}].forEach(function(obj){
+    h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:12px;margin-bottom:12px;background:#FFF0EB">';
+    h+='<div style="font-size:13px;font-weight:700;color:#C73D08;margin-bottom:8px">'+obj.lbl+'</div>';
+    h+='<div>';
+    (pdb[obj.k].products||[]).forEach(function(p,idx){
+      h+='<div class="prow" draggable="true" data-cat="'+obj.k+'" data-grp="" data-ser="" data-i="'+idx+'"'
+        +' ondragstart="window.dStart(event)" ondragover="window.dOver(event)" ondragend="window.dEnd(event)" ondrop="window.dDrop(event)">';
+      h+='<span class="drag-handle">&#8801;</span>';
+      h+='<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>';
+      h+='<button class="move-btn" data-cat="'+obj.k+'" data-grp="" data-ser="" data-i="'+idx+'" data-dir="-1" onclick="window.mvBtn(this)">&#9650;</button>';
+      h+='<button class="move-btn" data-cat="'+obj.k+'" data-grp="" data-ser="" data-i="'+idx+'" data-dir="1"  onclick="window.mvBtn(this)">&#9660;</button>';
+      h+='<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000"'
+        +' data-cat="'+obj.k+'" data-grp="" data-ser="" data-i="'+idx+'" onchange="window.updPBtn(this)"></div>';
+      h+='<button class="prd" data-cat="'+obj.k+'" data-grp="" data-ser="" data-i="'+idx+'" onclick="window.delPBtn(this)">&#128465;</button>';
+      h+='</div>';
+    });
     h+='</div>';
-    h+='<div class="apr"><input type="text" id="nn_'+obj.k+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px">'
-      +'<input type="number" id="np_'+obj.k+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000">'
-      +'<button class="badd" onclick="window.addProdA(\''+obj.k+'\',null,null)">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
+    h+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">'
+      +'<input type="text" id="nn_'+obj.k+'" placeholder="ชื่อสินค้าใหม่" style="flex:1;min-width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px">'
+      +'<input type="number" id="np_'+obj.k+'" placeholder="ราคา" style="width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px" min="0" step="1000">'
+      +'<button data-cat="'+obj.k+'" data-grp="" data-ser="" onclick="window.addPBtn(this)" style="background:#E8470A;color:#fff;border:none;padding:5px 14px;border-radius:7px;font-size:12px;cursor:pointer">+ เพิ่ม</button>'
+      +'</div></div>';
   });
-  h+='<div class="adm-sec">&#9881; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e40\u0e2a\u0e23\u0e34\u0e21</div>';
+  h+='<div style="font-size:13px;font-weight:600;color:#333;margin:14px 0 10px;padding-bottom:7px;border-bottom:1.5px solid #eee">&#9881; จัดการอุปกรณ์เสริม</div>';
   Object.keys(adb).forEach(function(grp){
     var items=adb[grp]||[];
     var kk='acc_'+grp.replace(/\W/g,'_');
-    var enc_g=encodeURIComponent(grp);
-    h+='<div class="ap grn"><div class="apt grn">&#127991; '+xss(grp)+'</div>';
-    h+='<div id="dz_acc_'+kk+'" class="drop-zone">';
-    h+=items.map(function(p,i){
-      return '<div class="prow" draggable="true" data-cat="acc" data-grp="'+enc_g+'" data-ser="" data-idx="'+i+'" '
-        +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
-        +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
-        +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
-        +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
-        +'<button class="move-btn" onclick="window.moveItem(\'acc\',\''+enc_g+'\',\'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
-        +'<button class="move-btn" onclick="window.moveItem(\'acc\',\''+enc_g+'\',\'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
-        +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updAcc(\''+enc_g+'\','+i+',this.value)"></div>'
-        +'<button class="prd" onclick="window.delAcc(\''+enc_g+'\','+i+')">&#128465;</button>'
-        +'</div></div>';
-    }).join('');
+    var EG=encodeURIComponent(grp);
+    h+='<div style="border:1.5px solid #1a7c3e;border-radius:10px;padding:12px;margin-bottom:12px;background:#e8f5e9">';
+    h+='<div style="font-size:13px;font-weight:700;color:#155f30;margin-bottom:8px">&#127991; '+xss(grp)+'</div>';
+    h+='<div>';
+    items.forEach(function(p,idx){
+      h+='<div class="prow" draggable="true" data-cat="acc" data-grp="'+EG+'" data-ser="" data-i="'+idx+'"'
+        +' ondragstart="window.dStart(event)" ondragover="window.dOver(event)" ondragend="window.dEnd(event)" ondrop="window.dDrop(event)">';
+      h+='<span class="drag-handle">&#8801;</span>';
+      h+='<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>';
+      h+='<button class="move-btn" data-cat="acc" data-grp="'+EG+'" data-ser="" data-i="'+idx+'" data-dir="-1" onclick="window.mvBtn(this)">&#9650;</button>';
+      h+='<button class="move-btn" data-cat="acc" data-grp="'+EG+'" data-ser="" data-i="'+idx+'" data-dir="1"  onclick="window.mvBtn(this)">&#9660;</button>';
+      h+='<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000"'
+        +' data-cat="acc" data-grp="'+EG+'" data-i="'+idx+'" onchange="window.updAccBtn(this)"></div>';
+      h+='<button class="prd" data-cat="acc" data-grp="'+EG+'" data-i="'+idx+'" onclick="window.delAccBtn(this)">&#128465;</button>';
+      h+='</div>';
+    });
     h+='</div>';
-    h+='<div class="apr"><input type="text" id="an_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:80px">'
-      +'<input type="text" id="as_'+kk+'" placeholder="\u0e2b\u0e21\u0e27\u0e14\u0e22\u0e48\u0e2d\u0e22" style="width:80px">'
-      +'<input type="number" id="ap_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:75px" min="0" step="100">'
-      +'<button class="badd g" onclick="window.addAcc(\''+enc_g+'\')">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
+    h+='<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">'
+      +'<input type="text" id="an_'+kk+'" placeholder="ชื่ออุปกรณ์" style="flex:1;min-width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px">'
+      +'<input type="text" id="as_'+kk+'" placeholder="หมวดย่อย" style="width:80px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px">'
+      +'<input type="number" id="ap_'+kk+'" placeholder="ราคา" style="width:75px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px" min="0" step="100">'
+      +'<button data-grp="'+EG+'" onclick="window.addAccBtn(this)" style="background:#1a7c3e;color:#fff;border:none;padding:5px 14px;border-radius:7px;font-size:12px;cursor:pointer">+ เพิ่ม</button>'
+      +'</div></div>';
   });
-  h+='<div class="ap dsh"><div class="apt grn">&#43; \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e43\u0e2b\u0e21\u0e48</div><div class="apr">'
-    +'<input type="text" id="newAccGrp" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:120px">'
-    +'<button class="badd g" onclick="window.addAccGrp()">+ \u0e2a\u0e23\u0e49\u0e32\u0e07\u0e01\u0e25\u0e38\u0e48\u0e21</button></div></div>';
-  h+='<div style="margin-top:10px"><button class="bsm" style="font-size:12px;color:#c0392b;border-color:#c0392b" onclick="window.resetAll()">'
-    +'&#8635; \u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e30\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</button></div>';
+  h+='<div style="border:1.5px dashed #1a7c3e;border-radius:10px;padding:12px;margin-bottom:12px;background:#f9f9f9">';
+  h+='<div style="font-size:13px;font-weight:700;color:#155f30;margin-bottom:8px">&#43; เพิ่มกลุ่มอุปกรณ์ใหม่</div>';
+  h+='<div style="display:flex;gap:6px;flex-wrap:wrap">'
+    +'<input type="text" id="newAccGrp" placeholder="ชื่อกลุ่มอุปกรณ์" style="flex:1;min-width:120px;padding:5px 7px;border:1px solid #ddd;border-radius:7px;font-size:12px">'
+    +'<button onclick="window.addAccGrp()" style="background:#1a7c3e;color:#fff;border:none;padding:5px 14px;border-radius:7px;font-size:12px;cursor:pointer">+ สร้างกลุ่ม</button>'
+    +'</div></div>';
+  h+='<div style="margin-top:10px"><button onclick="window.resetAll()" style="background:#fff;color:#c0392b;border:1.5px solid #c0392b;padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer">&#8635; รีเซ็ตสินค้าและอุปกรณ์ทั้งหมด</button></div>';
   document.getElementById('admW').innerHTML=h;
 }
-window.updP=async function(cat,grp,ser,i,v){ var val=parseInt(v)||0; if(cat==='agri'){ if(pdb.agri.groups[grp]&&pdb.agri.groups[grp][ser]&&pdb.agri.groups[grp][ser][i]) pdb.agri.groups[grp][ser][i].p=val; } else { if(pdb[cat]&&pdb[cat].products&&pdb[cat].products[i]) pdb[cat].products[i].p=val; } await saveProds(); renderPS(); showT('t3','\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e23\u0e32\u0e04\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
-window.delProd=async function(cat,grp,ser,i){ if(!confirm('\u0e25\u0e1a\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e35\u0e49?')) return; if(cat==='agri') pdb.agri.groups[grp][ser].splice(i,1); else pdb[cat].products.splice(i,1); await saveProds(); renderAdmin(); renderPS(); showT('t3','\u0e25\u0e1a\u0e41\u0e25\u0e49\u0e27',true); };
-window.addProdA=async function(cat,grp,ser){ var kk=(grp&&ser)?(grp+ser).replace(/\W/g,'_'):cat; var n=(document.getElementById('nn_'+kk)?.value||'').trim(); var p=parseInt(document.getElementById('np_'+kk)?.value||0); if(!n){ showT('t3','\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e0a\u0e37\u0e48\u0e2d',true); return; } if(cat==='agri'){ if(!pdb.agri.groups[grp][ser]) pdb.agri.groups[grp][ser]=[]; pdb.agri.groups[grp][ser].push({n:n,p:p,img:''}); } else pdb[cat].products.push({n:n,p:p,img:''}); await saveProds(); renderAdmin(); renderPS(); showT('t3','\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
-window.updAcc=async function(grp,i,v){ if(adb[grp]&&adb[grp][i]) adb[grp][i].p=parseInt(v)||0; await saveAcc(); renderAS(); showT('t3','\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e23\u0e32\u0e04\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
-window.delAcc=async function(grp,i){ if(!confirm('\u0e25\u0e1a\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e19\u0e35\u0e49?')) return; adb[grp].splice(i,1); await saveAcc(); renderAdmin(); renderAS(); showT('t3','\u0e25\u0e1a\u0e41\u0e25\u0e49\u0e27',true); };
-window.addAcc=async function(grp){ var kk='acc_'+grp.replace(/\W/g,'_'); var n=(document.getElementById('an_'+kk)?.value||'').trim(); var sub=(document.getElementById('as_'+kk)?.value||'').trim(); var p=parseInt(document.getElementById('ap_'+kk)?.value||0); if(!n){ showT('t3','\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e0a\u0e37\u0e48\u0e2d\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c',true); return; } if(!adb[grp]) adb[grp]=[]; var item={n:n,p:p,img:''}; if(sub) item.sub=sub; adb[grp].push(item); await saveAcc(); renderAdmin(); renderAS(); showT('t3','\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e41\u0e25\u0e49\u0e27 \u2713'); };
-window.addAccGrp=async function(){ var n=(document.getElementById('newAccGrp')?.value||'').trim(); if(!n){ showT('t3','\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e25\u0e38\u0e48\u0e21',true); return; } if(adb[n]){ showT('t3','\u0e21\u0e35\u0e01\u0e25\u0e38\u0e48\u0e21\u0e19\u0e35\u0e49\u0e2d\u0e22\u0e39\u0e48\u0e41\u0e25\u0e49\u0e27',true); return; } adb[n]=[]; await saveAcc(); renderAdmin(); renderAS(); showT('t3','\u0e2a\u0e23\u0e49\u0e32\u0e07\u0e01\u0e25\u0e38\u0e48\u0e21\u0e41\u0e25\u0e49\u0e27 \u2713'); };
-window.resetAll=async function(){ if(!confirm('\u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e30\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14?')) return; pdb=JSON.parse(JSON.stringify(DP)); adb=JSON.parse(JSON.stringify(DA_DEF)); selMC=null; selGrp=''; selSer=''; selAG=''; await saveProds(); await saveAcc(); renderAdmin(); renderPS(); renderAS(); showT('t3','\u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e41\u0e25\u0e49\u0e27 \u2713'); };
+// ===== DRAG & DROP + MOVE =====
+var _ds = null; // drag source element
 
-document.getElementById('fDate').value = window.today();
+window.getItemArr = function(cat, grp, ser){
+  grp = grp ? decodeURIComponent(grp) : '';
+  ser = ser ? decodeURIComponent(ser) : '';
+  if(cat === 'agri') return pdb.agri.groups[grp] && pdb.agri.groups[grp][ser];
+  if(cat === 'acc')  return adb[grp];
+  return pdb[cat] && pdb[cat].products;
+};
+window.saveByType = async function(cat){
+  if(cat === 'acc') await window.saveAcc(); else await window.saveProds();
+};
 
-// ===== DRAG & DROP + MOVE BUTTONS =====
-var _dragSrc = null;
+window.mvItem = async function(cat, grp, ser, idx, dir){
+  var arr = window.getItemArr(cat, grp, ser);
+  if(!arr) return;
+  idx = parseInt(idx); dir = parseInt(dir);
+  var to = idx + dir;
+  if(to < 0 || to >= arr.length) return;
+  var tmp = arr[idx]; arr[idx] = arr[to]; arr[to] = tmp;
+  await window.saveByType(cat);
+  window.renderAdmin();
+  if(cat === 'acc') window.renderAS(); else window.renderPS();
+  window.showT('t3','เรียงลำดับแล้ว ✓');
+};
 
-function getArr(cat,grp,ser){
-  grp=grp?decodeURIComponent(grp):grp;
-  ser=ser?decodeURIComponent(ser):ser;
-  if(cat==='agri') return pdb.agri.groups[grp][ser];
-  if(cat==='acc')  return adb[decodeURIComponent(grp)||grp];
-  return pdb[cat].products;
-}
-async function saveByType(cat,grp){
-  if(cat==='agri'||cat==='const'||cat==='innov') await saveProds();
-  else await saveAcc();
-}
+window.dStart = function(e){
+  _ds = e.currentTarget;
+  _ds.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/plain', _ds.dataset.i);
+};
+window.dOver = function(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
+  if(_ds && e.currentTarget !== _ds) e.currentTarget.classList.add('drag-over');
+};
+window.dEnd = function(e){
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
+  _ds = null;
+};
+window.dDrop = async function(e){
+  e.preventDefault();
+  var tgt = e.currentTarget;
+  if(!_ds || _ds === tgt) return;
+  if(_ds.dataset.cat !== tgt.dataset.cat ||
+     _ds.dataset.grp !== tgt.dataset.grp ||
+     _ds.dataset.ser !== tgt.dataset.ser) return;
+  var cat = _ds.dataset.cat;
+  var arr = window.getItemArr(cat, _ds.dataset.grp, _ds.dataset.ser);
+  if(!arr) return;
+  var from = parseInt(_ds.dataset.i);
+  var to   = parseInt(tgt.dataset.i);
+  var item = arr.splice(from, 1)[0];
+  arr.splice(to, 0, item);
+  await window.saveByType(cat);
+  window.renderAdmin();
+  if(cat === 'acc') window.renderAS(); else window.renderPS();
+  window.showT('t3','เรียงลำดับแล้ว ✓');
+};
 
-window.moveItem = async function(cat,grp,ser,idx,dir){
-  idx=parseInt(idx);
-  var arr=getArr(cat,grp,ser);
+
+// ===== DATA-ATTR BASED HANDLERS =====
+window.getArr = function(cat, grp, ser){
+  var G = grp ? decodeURIComponent(grp) : '';
+  var S = ser ? decodeURIComponent(ser) : '';
+  if(cat==='agri') return pdb.agri.groups[G] && pdb.agri.groups[G][S];
+  if(cat==='acc')  return adb[G];
+  return pdb[cat] && pdb[cat].products;
+};
+window.saveByCat = async function(cat){
+  if(cat==='acc') await window.saveAcc(); else await window.saveProds();
+};
+window.mvBtn = async function(btn){
+  var d=btn.dataset, arr=window.getArr(d.cat,d.grp,d.ser), idx=parseInt(d.i), dir=parseInt(d.dir);
   if(!arr) return;
   var to=idx+dir;
   if(to<0||to>=arr.length) return;
   var tmp=arr[idx]; arr[idx]=arr[to]; arr[to]=tmp;
-  await saveByType(cat,grp);
-  renderAdmin();
-  if(cat==='acc') renderAS(); else renderPS();
+  await window.saveByCat(d.cat);
+  window.renderAdmin();
+  if(d.cat==='acc') window.renderAS(); else window.renderPS();
+  window.showT('t3','เรียงลำดับแล้ว ✓');
 };
-
-window.dragStart = function(e){
-  _dragSrc = e.currentTarget;
-  e.currentTarget.classList.add('dragging');
-  e.dataTransfer.effectAllowed='move';
-  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+window.updPBtn = async function(inp){
+  var d=inp.dataset, val=parseInt(inp.value)||0;
+  if(d.cat==='agri'){ var G=decodeURIComponent(d.grp), S=decodeURIComponent(d.ser), i=parseInt(d.i); if(pdb.agri.groups[G]&&pdb.agri.groups[G][S]&&pdb.agri.groups[G][S][i]) pdb.agri.groups[G][S][i].p=val; }
+  else if(pdb[d.cat]&&pdb[d.cat].products&&pdb[d.cat].products[parseInt(d.i)]) pdb[d.cat].products[parseInt(d.i)].p=val;
+  await window.saveProds(); window.renderPS(); window.showT('t3','อัปเดตราคาแล้ว ✓');
 };
-window.dragOver = function(e){
-  e.preventDefault();
-  e.dataTransfer.dropEffect='move';
-  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
-  if(e.currentTarget !== _dragSrc) e.currentTarget.classList.add('drag-over');
+window.delPBtn = async function(btn){
+  if(!confirm('ลบสินค้านี้?')) return;
+  var d=btn.dataset, i=parseInt(d.i);
+  if(d.cat==='agri'){ var G=decodeURIComponent(d.grp), S=decodeURIComponent(d.ser); pdb.agri.groups[G][S].splice(i,1); }
+  else pdb[d.cat].products.splice(i,1);
+  await window.saveProds(); window.renderAdmin(); window.renderPS(); window.showT('t3','ลบแล้ว',true);
 };
-window.dragEnd = function(e){
-  e.currentTarget.classList.remove('dragging');
-  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
+window.addPBtn = async function(btn){
+  var d=btn.dataset;
+  var cat=d.cat, G=d.grp?decodeURIComponent(d.grp):'', S=d.ser?decodeURIComponent(d.ser):'';
+  var kk= cat==='agri' ? (G+S).replace(/\W/g,'_') : cat;
+  var n=(document.getElementById('nn_'+kk)?.value||'').trim();
+  var p=parseInt(document.getElementById('np_'+kk)?.value||0);
+  if(!n){ window.showT('t3','กรุณากรอกชื่อ',true); return; }
+  if(cat==='agri'){ if(!pdb.agri.groups[G][S]) pdb.agri.groups[G][S]=[]; pdb.agri.groups[G][S].push({n:n,p:p,img:''}); }
+  else pdb[cat].products.push({n:n,p:p,img:''});
+  await window.saveProds(); window.renderAdmin(); window.renderPS(); window.showT('t3','เพิ่มสินค้าแล้ว ✓');
 };
-window.onDrop = async function(e){
-  e.preventDefault();
-  var target = e.currentTarget;
-  if(!_dragSrc || _dragSrc===target) return;
-  if(_dragSrc.dataset.cat!==target.dataset.cat||
-     _dragSrc.dataset.grp!==target.dataset.grp||
-     _dragSrc.dataset.ser!==target.dataset.ser) return;
-  var cat=_dragSrc.dataset.cat;
-  var grp=_dragSrc.dataset.grp;
-  var ser=_dragSrc.dataset.ser;
-  var arr=getArr(cat,grp,ser);
-  if(!arr) return;
-  var from=parseInt(_dragSrc.dataset.idx);
-  var to  =parseInt(target.dataset.idx);
-  var item=arr.splice(from,1)[0];
-  arr.splice(to,0,item);
-  await saveByType(cat,grp);
-  renderAdmin();
-  if(cat==='acc') renderAS(); else renderPS();
-  _dragSrc=null;
+window.updAccBtn = async function(inp){
+  var d=inp.dataset, G=decodeURIComponent(d.grp), i=parseInt(d.i);
+  if(adb[G]&&adb[G][i]) adb[G][i].p=parseInt(inp.value)||0;
+  await window.saveAcc(); window.renderAS(); window.showT('t3','อัปเดตราคาแล้ว ✓');
+};
+window.delAccBtn = async function(btn){
+  if(!confirm('ลบอุปกรณ์นี้?')) return;
+  var d=btn.dataset, G=decodeURIComponent(d.grp), i=parseInt(d.i);
+  adb[G].splice(i,1);
+  await window.saveAcc(); window.renderAdmin(); window.renderAS(); window.showT('t3','ลบแล้ว',true);
+};
+window.addAccBtn = async function(btn){
+  var G=decodeURIComponent(btn.dataset.grp), kk='acc_'+G.replace(/\W/g,'_');
+  var n=(document.getElementById('an_'+kk)?.value||'').trim();
+  var sub=(document.getElementById('as_'+kk)?.value||'').trim();
+  var p=parseInt(document.getElementById('ap_'+kk)?.value||0);
+  if(!n){ window.showT('t3','กรุณากรอกชื่ออุปกรณ์',true); return; }
+  if(!adb[G]) adb[G]=[];
+  var item={n:n,p:p,img:''}; if(sub) item.sub=sub; adb[G].push(item);
+  await window.saveAcc(); window.renderAdmin(); window.renderAS(); window.showT('t3','เพิ่มอุปกรณ์แล้ว ✓');
 };
 
 </script>
@@ -728,7 +796,7 @@ window.onDrop = async function(e){
         <div class="fg">
           <label>เบอร์โทร (10 หลัก)</label>
           <div class="tel-wrap">
-            <input id="fTel" placeholder="0812345678" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);window.updTel()" onchange="window.updTel()">
+            <input id="fTel" placeholder="0812345678" maxlength="10" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,10);updTel()" onchange="updTel()">
             <span class="tel-cnt" id="telCnt">0/10</span>
           </div>
         </div>
@@ -789,3 +857,5 @@ window.onDrop = async function(e){
 </div>
 
 </body></html>
+
+
