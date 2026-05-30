@@ -1,7 +1,7 @@
 {
   "name": "KUBOTA CRM - Pantractor",
   "short_name": "KUBOTA CRM",
-  "description": "ระบบบันทึกข้อมูลลูกค้า Kubota Pantractor Ltd.,Part",
+  "description": "ระบบบันทึกข้อมูลลูกค้า Kubota Pantractor Co., Ltd.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
