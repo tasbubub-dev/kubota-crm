@@ -187,6 +187,23 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f0f0;color:#222;min-h
 .badd{background:#E8470A;color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:12px;cursor:pointer;font-weight:600}
 .badd:hover{background:#C73D08}
 .badd.g{background:#1a7c3e}.badd.g:hover{background:#155f30}
+
+/* ===== DRAG & DROP ===== */
+.prow{ cursor:default; transition:background .15s; }
+.prow.dragging{ opacity:.4; background:var(--orl,#FFF0EB); }
+.prow.drag-over{ border-top:2px solid #E8470A; }
+.prow .drag-handle{
+  cursor:grab; padding:0 6px; color:#bbb; font-size:16px;
+  display:inline-flex; align-items:center; user-select:none; flex-shrink:0;
+}
+.prow .drag-handle:active{ cursor:grabbing; }
+.move-btn{
+  background:none; border:0.5px solid #ddd; border-radius:4px;
+  cursor:pointer; color:#888; font-size:12px; padding:2px 5px;
+  line-height:1; flex-shrink:0;
+}
+.move-btn:hover{ background:#f5f5f5; color:#E8470A; border-color:#E8470A; }
+
 </style>
 </head>
   <script type="module">
@@ -482,28 +499,79 @@ window.renderAdmin = function renderAdmin(){
     h+='<div class="ap ora"><div class="apt ora">&#127991; '+xss(grp)+'</div>';
     sers.forEach(function(ser){
       var items=pdb.agri.groups[grp][ser]||[];
-      h+='<div class="sdiv">'+xss(ser)+'</div>';
-      h+=items.map(function(p,i){ return '<div class="prow"><div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div><div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="updP(\'agri\',\''+grp.replace(/'/g,"\\'")+'\'  ,\''+ser.replace(/'/g,"\\'")+'\'  ,'+i+',this.value)"></div><button class="prd" onclick="delProd(\'agri\',\''+grp.replace(/'/g,"\\'")+'\'  ,\''+ser.replace(/'/g,"\\'")+'\'  ,'+i+')">&#128465;</button></div>'; }).join('');
       var kk=(grp+ser).replace(/\W/g,'_');
-      h+='<div class="apr"><input type="text" id="nn_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px"><input type="number" id="np_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000"><button class="badd" onclick="addProdA(\'agri\',\''+grp.replace(/'/g,"\\'")+'\'  ,\''+ser.replace(/'/g,"\\'")+'\'  )">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div>';
+      h+='<div class="sdiv">'+xss(ser)+'</div>';
+      h+='<div id="dz_'+kk+'" class="drop-zone">';
+      h+=items.map(function(p,i){
+        var enc_g=encodeURIComponent(grp), enc_s=encodeURIComponent(ser);
+        return '<div class="prow" draggable="true" data-cat="agri" data-grp="'+enc_g+'" data-ser="'+enc_s+'" data-idx="'+i+'" '
+          +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
+          +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
+          +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
+          +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
+          +'<button class="move-btn" onclick="window.moveItem(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
+          +'<button class="move-btn" onclick="window.moveItem(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
+          +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updP(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+',this.value)"></div>'
+          +'<button class="prd" onclick="window.delProd(\'agri\',\''+enc_g+'\',\''+enc_s+'\','+i+')">&#128465;</button>'
+          +'</div></div>';
+      }).join('');
+      h+='</div>';
+      h+='<div class="apr"><input type="text" id="nn_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px">'
+        +'<input type="number" id="np_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000">'
+        +'<button class="badd" onclick="window.addProdA(\'agri\',\''+enc_g+'\',\''+enc_s+'\')">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div>';
     });
     h+='</div>';
   });
   [{k:'const',lbl:'&#127959; \u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e48\u0e2d\u0e2a\u0e23\u0e49\u0e32\u0e07'},{k:'innov',lbl:'&#128161; \u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e27\u0e31\u0e15\u0e01\u0e23\u0e23\u0e21'}].forEach(function(obj){
     h+='<div class="ap ora"><div class="apt ora">'+obj.lbl+'</div>';
-    h+=(pdb[obj.k].products||[]).map(function(p,i){ return '<div class="prow"><div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div><div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="updP(\''+obj.k+'\',null,null,'+i+',this.value)"></div><button class="prd" onclick="delProd(\''+obj.k+'\',null,null,'+i+')">&#128465;</button></div>'; }).join('');
-    h+='<div class="apr"><input type="text" id="nn_'+obj.k+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px"><input type="number" id="np_'+obj.k+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000"><button class="badd" onclick="addProdA(\''+obj.k+'\',null,null)">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
+    h+='<div id="dz_'+obj.k+'" class="drop-zone">';
+    h+=(pdb[obj.k].products||[]).map(function(p,i){
+      return '<div class="prow" draggable="true" data-cat="'+obj.k+'" data-grp="" data-ser="" data-idx="'+i+'" '
+        +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
+        +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
+        +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
+        +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
+        +'<button class="move-btn" onclick="window.moveItem(\''+obj.k+'\',\'\',\'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
+        +'<button class="move-btn" onclick="window.moveItem(\''+obj.k+'\',\'\',\'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
+        +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updP(\''+obj.k+'\',null,null,'+i+',this.value)"></div>'
+        +'<button class="prd" onclick="window.delProd(\''+obj.k+'\',null,null,'+i+')">&#128465;</button>'
+        +'</div></div>';
+    }).join('');
+    h+='</div>';
+    h+='<div class="apr"><input type="text" id="nn_'+obj.k+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e43\u0e2b\u0e21\u0e48" style="flex:1;min-width:80px">'
+      +'<input type="number" id="np_'+obj.k+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:80px" min="0" step="1000">'
+      +'<button class="badd" onclick="window.addProdA(\''+obj.k+'\',null,null)">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
   });
   h+='<div class="adm-sec">&#9881; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e40\u0e2a\u0e23\u0e34\u0e21</div>';
   Object.keys(adb).forEach(function(grp){
     var items=adb[grp]||[];
-    h+='<div class="ap grn"><div class="apt grn">&#127991; '+xss(grp)+'</div>';
-    h+=items.map(function(p,i){ return '<div class="prow"><div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div><div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="updAcc(\''+grp.replace(/'/g,"\\'")+'\'  ,'+i+',this.value)"></div><button class="prd" onclick="delAcc(\''+grp.replace(/'/g,"\\'")+'\'  ,'+i+')">&#128465;</button></div>'; }).join('');
     var kk='acc_'+grp.replace(/\W/g,'_');
-    h+='<div class="apr"><input type="text" id="an_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:80px"><input type="text" id="as_'+kk+'" placeholder="\u0e2b\u0e21\u0e27\u0e14\u0e22\u0e48\u0e2d\u0e22" style="width:80px"><input type="number" id="ap_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:75px" min="0" step="100"><button class="badd g" onclick="addAcc(\''+grp.replace(/'/g,"\\'")+'\'  )">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
+    var enc_g=encodeURIComponent(grp);
+    h+='<div class="ap grn"><div class="apt grn">&#127991; '+xss(grp)+'</div>';
+    h+='<div id="dz_acc_'+kk+'" class="drop-zone">';
+    h+=items.map(function(p,i){
+      return '<div class="prow" draggable="true" data-cat="acc" data-grp="'+enc_g+'" data-ser="" data-idx="'+i+'" '
+        +'ondragstart="window.dragStart(event)" ondragover="window.dragOver(event)" ondragend="window.dragEnd(event)" ondrop="window.onDrop(event)">'
+        +'<span class="drag-handle" title="\u0e25\u0e32\u0e01\u0e40\u0e1e\u0e37\u0e48\u0e2d\u0e40\u0e23\u0e35\u0e22\u0e07">&#9776;</span>'
+        +'<div class="prn">'+xss(p.n)+(p.sub?'<div class="prsub">'+xss(p.sub)+'</div>':'')+'</div>'
+        +'<div style="display:flex;gap:3px;align-items:center;flex-shrink:0">'
+        +'<button class="move-btn" onclick="window.moveItem(\'acc\',\''+enc_g+'\',\'\','+i+',-1)" title="\u0e02\u0e36\u0e49\u0e19">&#9650;</button>'
+        +'<button class="move-btn" onclick="window.moveItem(\'acc\',\''+enc_g+'\',\'\','+i+',1)" title="\u0e25\u0e07">&#9660;</button>'
+        +'<div class="prp"><input type="number" value="'+p.p+'" min="0" step="1000" onchange="window.updAcc(\''+enc_g+'\','+i+',this.value)"></div>'
+        +'<button class="prd" onclick="window.delAcc(\''+enc_g+'\','+i+')">&#128465;</button>'
+        +'</div></div>';
+    }).join('');
+    h+='</div>';
+    h+='<div class="apr"><input type="text" id="an_'+kk+'" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:80px">'
+      +'<input type="text" id="as_'+kk+'" placeholder="\u0e2b\u0e21\u0e27\u0e14\u0e22\u0e48\u0e2d\u0e22" style="width:80px">'
+      +'<input type="number" id="ap_'+kk+'" placeholder="\u0e23\u0e32\u0e04\u0e32" style="width:75px" min="0" step="100">'
+      +'<button class="badd g" onclick="window.addAcc(\''+enc_g+'\')">+ \u0e40\u0e1e\u0e34\u0e48\u0e21</button></div></div>';
   });
-  h+='<div class="ap dsh"><div class="apt grn">&#43; \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e43\u0e2b\u0e21\u0e48</div><div class="apr"><input type="text" id="newAccGrp" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:120px"><button class="badd g" onclick="addAccGrp()">+ \u0e2a\u0e23\u0e49\u0e32\u0e07\u0e01\u0e25\u0e38\u0e48\u0e21</button></div></div>';
-  h+='<div style="margin-top:10px"><button class="bsm" style="font-size:12px;color:#c0392b;border-color:#c0392b" onclick="resetAll()">&#8635; \u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e30\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</button></div>';
+  h+='<div class="ap dsh"><div class="apt grn">&#43; \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e43\u0e2b\u0e21\u0e48</div><div class="apr">'
+    +'<input type="text" id="newAccGrp" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e01\u0e25\u0e38\u0e48\u0e21\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c" style="flex:1;min-width:120px">'
+    +'<button class="badd g" onclick="window.addAccGrp()">+ \u0e2a\u0e23\u0e49\u0e32\u0e07\u0e01\u0e25\u0e38\u0e48\u0e21</button></div></div>';
+  h+='<div style="margin-top:10px"><button class="bsm" style="font-size:12px;color:#c0392b;border-color:#c0392b" onclick="window.resetAll()">'
+    +'&#8635; \u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e30\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</button></div>';
   document.getElementById('admW').innerHTML=h;
 }
 window.updP=async function(cat,grp,ser,i,v){ var val=parseInt(v)||0; if(cat==='agri'){ if(pdb.agri.groups[grp]&&pdb.agri.groups[grp][ser]&&pdb.agri.groups[grp][ser][i]) pdb.agri.groups[grp][ser][i].p=val; } else { if(pdb[cat]&&pdb[cat].products&&pdb[cat].products[i]) pdb[cat].products[i].p=val; } await saveProds(); renderPS(); showT('t3','\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e23\u0e32\u0e04\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
@@ -516,6 +584,72 @@ window.addAccGrp=async function(){ var n=(document.getElementById('newAccGrp')?.
 window.resetAll=async function(){ if(!confirm('\u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e30\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14?')) return; pdb=JSON.parse(JSON.stringify(DP)); adb=JSON.parse(JSON.stringify(DA_DEF)); selMC=null; selGrp=''; selSer=''; selAG=''; await saveProds(); await saveAcc(); renderAdmin(); renderPS(); renderAS(); showT('t3','\u0e23\u0e35\u0e40\u0e0b\u0e47\u0e15\u0e41\u0e25\u0e49\u0e27 \u2713'); };
 
 document.getElementById('fDate').value = window.today();
+
+// ===== DRAG & DROP + MOVE BUTTONS =====
+var _dragSrc = null;
+
+function getArr(cat,grp,ser){
+  grp=grp?decodeURIComponent(grp):grp;
+  ser=ser?decodeURIComponent(ser):ser;
+  if(cat==='agri') return pdb.agri.groups[grp][ser];
+  if(cat==='acc')  return adb[decodeURIComponent(grp)||grp];
+  return pdb[cat].products;
+}
+async function saveByType(cat,grp){
+  if(cat==='agri'||cat==='const'||cat==='innov') await saveProds();
+  else await saveAcc();
+}
+
+window.moveItem = async function(cat,grp,ser,idx,dir){
+  idx=parseInt(idx);
+  var arr=getArr(cat,grp,ser);
+  if(!arr) return;
+  var to=idx+dir;
+  if(to<0||to>=arr.length) return;
+  var tmp=arr[idx]; arr[idx]=arr[to]; arr[to]=tmp;
+  await saveByType(cat,grp);
+  renderAdmin();
+  if(cat==='acc') renderAS(); else renderPS();
+};
+
+window.dragStart = function(e){
+  _dragSrc = e.currentTarget;
+  e.currentTarget.classList.add('dragging');
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain', e.currentTarget.dataset.idx);
+};
+window.dragOver = function(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
+  if(e.currentTarget !== _dragSrc) e.currentTarget.classList.add('drag-over');
+};
+window.dragEnd = function(e){
+  e.currentTarget.classList.remove('dragging');
+  document.querySelectorAll('.prow.drag-over').forEach(function(el){ el.classList.remove('drag-over'); });
+};
+window.onDrop = async function(e){
+  e.preventDefault();
+  var target = e.currentTarget;
+  if(!_dragSrc || _dragSrc===target) return;
+  if(_dragSrc.dataset.cat!==target.dataset.cat||
+     _dragSrc.dataset.grp!==target.dataset.grp||
+     _dragSrc.dataset.ser!==target.dataset.ser) return;
+  var cat=_dragSrc.dataset.cat;
+  var grp=_dragSrc.dataset.grp;
+  var ser=_dragSrc.dataset.ser;
+  var arr=getArr(cat,grp,ser);
+  if(!arr) return;
+  var from=parseInt(_dragSrc.dataset.idx);
+  var to  =parseInt(target.dataset.idx);
+  var item=arr.splice(from,1)[0];
+  arr.splice(to,0,item);
+  await saveByType(cat,grp);
+  renderAdmin();
+  if(cat==='acc') renderAS(); else renderPS();
+  _dragSrc=null;
+};
+
 </script>
 
 <div id="fbLoading" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9999;align-items:center;justify-content:center;flex-direction:column;gap:14px">
@@ -655,5 +789,3 @@ document.getElementById('fDate').value = window.today();
 </div>
 
 </body></html>
-
-
