@@ -372,7 +372,7 @@ window.togA=function(n,p,img){ if(accCart[n]) delete accCart[n]; else accCart[n]
 
 window.ciRow = function ciRow(it,t){
   var isA=t==='a', qc=isA?' g':'', pc=isA?' g':'', ico=isA?'&#9881;':'&#128668;';
-  return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">'  :'')+'<div class="ciph">'+ico+'</div><div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
+  return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">':'<div class="ciph">'+ico+'</div>')+'<div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
 }
 window.renderCW = function(){
   var mi=Object.values(cart), ai=Object.values(accCart);
@@ -822,3 +822,4 @@ window.dDr = async function(e){
 </div>
 
 </body></html>
+
