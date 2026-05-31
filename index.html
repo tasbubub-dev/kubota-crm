@@ -123,7 +123,7 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f0f0;color:#222;min-h
 .pi{border:1.5px solid #eee;border-radius:10px;cursor:pointer;background:#fff;overflow:hidden;position:relative;text-align:left}
 .pi:hover{border-color:#E8470A}
 .pi.sel{border:2px solid #E8470A}
-.pi img{width:100%;height:54px;object-fit:cover;background:#f5f5f5;display:block}
+.pi img{width:100%;height:54px;object-fit:contain;background:#f5f5f5;display:block;max-width:100%}
 .pi .ph{width:100%;height:54px;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:20px}
 .pi .pb{padding:5px 7px 6px}
 .pi .pn{font-size:11px;font-weight:600;color:#333;line-height:1.3}
@@ -242,11 +242,12 @@ const DEFAULT_USERS = {
 };
 let USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
 const RLBL = { admin:'<span class=\"rb rba\">Admin</span>', sale:'<span class=\"rb rbs\">Sale</span>', viewer:'<span class=\"rb rbv\">Viewer</span>' };
-const HEAT_LABEL=['❄️ Cold','🟡 Warm','🔥 Hot'];
-const HEAT_COLOR=['#4a90d9','#e67e22','#e74c3c'];
-const HEAT_BG=['#e8f4fd','#fef5e7','#fdf2f2'];
-const ST = ['\u0e23\u0e2d\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d','\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e25\u0e49\u0e27','\u0e1b\u0e34\u0e14\u0e01\u0e32\u0e23\u0e02\u0e32\u0e22','\u0e44\u0e21\u0e48\u0e2a\u0e19\u0e43\u0e08'];
-const SC = ['s0','s1','s2','s3'];
+const HEAT_LABEL=['★','★★','★★★'];
+const HEAT_COLOR=['#9e9e9e','#ff9800','#f44336'];
+const HEAT_BG=['#f5f5f5','#fff3e0','#ffebee'];
+const HEAT_NAME=['เย็น','อุ่น','ร้อน'];
+const ST = ['\\u0e44\\u0e21\\u0e48\\u0e2a\\u0e19\\u0e43\\u0e08','\\u0e23\\u0e2d\\u0e15\\u0e34\\u0e14\\u0e15\\u0e48\\u0e2d','\\u0e15\\u0e34\\u0e14\\u0e15\\u0e48\\u0e2d\\u0e41\\u0e25\\u0e49\\u0e27','\\u0e22\\u0e37\\u0e48\\u0e19\\u0e40\\u0e2d\\u0e01\\u0e2a\\u0e32\\u0e23','\\u0e40\\u0e1e\\u0e34\\u0e48\\u0e21\\u0e40\\u0e15\\u0e34\\u0e21\\u0e40\\u0e2d\\u0e01\\u0e2a\\u0e32\\u0e23','\\u0e2d\\u0e19\\u0e38\\u0e21\\u0e31\\u0e15\\u0e34','\\u0e44\\u0e21\\u0e48\\u0e2d\\u0e19\\u0e38\\u0e21\\u0e31\\u0e15\\u0e34','\\u0e2a\\u0e48\\u0e07\\u0e23\\u0e16\\u0e41\\u0e25\\u0e49\\u0e27'];
+const SC = ['s0','s1','s2','s3','s3','s2','s0','s2'];
 const BU = 'https://www.siamkubota.co.th/wp-content/uploads/';
 
 const DP = {
@@ -278,7 +279,7 @@ const DA_DEF = {
 let me=null, custs=[], pdb={}, adb={}, selMC=null, selGrp='', selSer='', selAG='', cart={}, accCart={};
 
 window.xss = window.xss = function xss(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-window.fmt = window.fmt = function fmt(n){ return '\u0e3f'+Number(n||0).toLocaleString(); }
+window.fmt = window.fmt = function fmt(n){ return Number(n||0).toLocaleString(); }
 window.today = window.today = function today(){ return new Date().toISOString().split('T')[0]; }
 window.showT = window.showT = function showT(id,msg,err){ var e=document.getElementById(id); if(!e)return; e.textContent=msg; e.style.background=err?'#c0392b':'#E8470A'; e.classList.add('on'); setTimeout(function(){e.classList.remove('on');},2500); }
 window.updTel = window.updTel = function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
@@ -343,6 +344,20 @@ window.saveProds = async function(){ try{ await setDoc(doc(db,'kb_data','product
 window.saveAcc = async function(){   try{ await setDoc(doc(db,'kb_data','accessories'),{value:adb}); }catch(e){ console.error('saveAcc',e); } }
 
 // ===== AUTH =====
+
+window.doForgotPassword = function(){
+  var email = prompt('กรุณากรอก Email ที่ใช้ Login:');
+  if(!email || !email.trim()) return;
+  email = email.trim();
+  if(!auth){ alert('ยังไม่ได้เชื่อมต่อ Firebase'); return; }
+  auth.sendPasswordResetEmail(email).then(function(){
+    var el=document.getElementById('lErr');
+    if(el){ el.textContent='ส่งอีเมล์รีเซ็ตรหัสผ่านไปยัง '+email+' แล้ว'; el.style.color='#2e7d32'; setTimeout(function(){el.textContent='';el.style.color='';},5000); }
+  }).catch(function(err){
+    var el=document.getElementById('lErr');
+    if(el){ el.textContent='ไม่พบ Email นี้ในระบบ: '+err.code; setTimeout(function(){el.textContent='';},4000); }
+  });
+};
 window.tryLogin = async function(){
   var u=(document.getElementById('lU').value||'').trim();
   var p=document.getElementById('lP').value||'';
@@ -398,7 +413,7 @@ onAuthStateChanged(auth, async function(user){
 // ===== PRODUCT SELECTOR =====
 window.renderPS = function(){
   var mn={agri:'\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e32\u0e23\u0e40\u0e01\u0e29\u0e15\u0e23',const:'\u0e40\u0e04\u0e23\u0e37\u0e48\u0e2d\u0e07\u0e08\u0e31\u0e01\u0e23\u0e01\u0e25\u0e01\u0e48\u0e2d\u0e2a\u0e23\u0e49\u0e32\u0e07',innov:'\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e27\u0e31\u0e15\u0e01\u0e23\u0e23\u0e21'};
-  var mi={agri:'&#127806;',const:'&#127959;',innov:'&#128161;'};
+  var mi={agri:'<svg width=\'32\' height=\'28\' viewBox=\'0 0 32 28\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><circle cx=\'9\' cy=\'21\' r=\'6\' stroke=\'#2e7d32\' stroke-width=\'2\'/><circle cx=\'9\' cy=\'21\' r=\'2\' fill=\'#2e7d32\'/><circle cx=\'25\' cy=\'23\' r=\'4\' stroke=\'#2e7d32\' stroke-width=\'2\'/><circle cx=\'25\' cy=\'23\' r=\'1.5\' fill=\'#2e7d32\'/><rect x=\'8\' y=\'10\' width=\'14\' height=\'8\' rx=\'1.5\' stroke=\'#2e7d32\' stroke-width=\'1.8\'/><rect x=\'14\' y=\'5\' width=\'8\' height=\'7\' rx=\'1\' stroke=\'#2e7d32\' stroke-width=\'1.8\'/><line x1=\'9\' y1=\'15\' x2=\'22\' y2=\'15\' stroke=\'#2e7d32\' stroke-width=\'1.5\'/><line x1=\'22\' y1=\'18\' x2=\'25\' y2=\'19\' stroke=\'#2e7d32\' stroke-width=\'1.8\'/><path d=\'M3 15 L8 15\' stroke=\'#2e7d32\' stroke-width=\'1.8\'/></svg>',const:'<svg width=\'32\' height=\'28\' viewBox=\'0 0 32 28\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><rect x=\'8\' y=\'8\' width=\'12\' height=\'9\' rx=\'1.5\' stroke=\'#e65100\' stroke-width=\'1.8\'/><rect x=\'4\' y=\'17\' width=\'20\' height=\'5\' rx=\'1.5\' stroke=\'#e65100\' stroke-width=\'1.8\'/><circle cx=\'6\' cy=\'22\' r=\'2.5\' stroke=\'#e65100\' stroke-width=\'1.5\'/><circle cx=\'22\' cy=\'22\' r=\'2.5\' stroke=\'#e65100\' stroke-width=\'1.5\'/><path d=\'M20 8 L28 4 L30 10 L20 12\' stroke=\'#e65100\' stroke-width=\'1.8\' fill=\'none\'/><path d=\'M28 10 L30 14 L26 16\' stroke=\'#e65100\' stroke-width=\'1.8\' fill=\'none\'/></svg>',innov:'<svg width=\'32\' height=\'28\' viewBox=\'0 0 32 28\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><circle cx=\'16\' cy=\'14\' r=\'4\' stroke=\'#1565c0\' stroke-width=\'2\'/><circle cx=\'16\' cy=\'14\' r=\'1.5\' fill=\'#1565c0\'/><line x1=\'16\' y1=\'14\' x2=\'6\' y2=\'7\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><line x1=\'16\' y1=\'14\' x2=\'26\' y2=\'7\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><line x1=\'16\' y1=\'14\' x2=\'6\' y2=\'21\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><line x1=\'16\' y1=\'14\' x2=\'26\' y2=\'21\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><ellipse cx=\'6\' cy=\'6\' rx=\'4\' ry=\'2\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><ellipse cx=\'26\' cy=\'6\' rx=\'4\' ry=\'2\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><ellipse cx=\'6\' cy=\'22\' rx=\'4\' ry=\'2\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><ellipse cx=\'26\' cy=\'22\' rx=\'4\' ry=\'2\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><line x1=\'13\' y1=\'18\' x2=\'19\' y2=\'18\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><line x1=\'16\' y1=\'18\' x2=\'16\' y2=\'24\' stroke=\'#1565c0\' stroke-width=\'1.5\'/><path d=\'M14 24 L16 22 L18 24\' stroke=\'#1565c0\' stroke-width=\'1.2\' fill=\'none\'/></svg>'};
   var h='<div class="mcat-grid">'+['agri','const','innov'].map(function(k){ return '<button class="mcat-btn'+(selMC===k?' on':'')+'" onclick="setMC(\'' +k+'\')">'+'<span class="mci">'+mi[k]+'</span><span>'+mn[k]+'</span></button>'; }).join('')+'</div>';
   if(selMC==='agri'){
     var grps=Object.keys(pdb.agri.groups);
@@ -472,7 +487,11 @@ window.renderList = function(){
     +'<div style="height:8px;background:'+_hcol+'"></div>'
     +'<div style="background:'+(_ism?'#f0fff4':'#eef3ff')+';border-bottom:1.5px solid '+(_ism?'#b7e4c7':'#c5d5f5')+';padding:5px 12px;font-size:11px;font-weight:700;color:'+(_ism?'#276749':'#1a4a9b')+'">&#128100; ลูกค้าของ '+xss(_oname)+'</div>'
     +'<div style="padding:12px 14px">'
-    +'<div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'
+    +'<div class="ch"><div>'
+    +'<div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">'
+    +'<div class="cn">'+xss(c.name)+'</div>'
+    +'<span style="font-size:15px;color:'+_hcol+';line-height:1;cursor:default" title="'+HEAT_NAME[_ht]+'">'  +_hlbl+'</span>'
+    +'</div>'
     +(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')
     +'</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'
     +'<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:'+_hbg+';color:'+_hcol+'">'+_hlbl+'</span>'
@@ -883,7 +902,7 @@ window.renderSystem = function(){
       +'</div>'
       +(ko.length?'<div id="vbox_'+k+'" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:8px;margin:5px 0;background:#fff"><div style="font-size:11px;color:#555;margin-bottom:5px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07 <span style="color:#E8470A;font-weight:600">(\u0e14\u0e39)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+vC+'</div></div>':'')
       +(ko.length?'<div id="ebox_'+k+'" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:8px;margin:5px 0;background:#fff"><div style="font-size:11px;color:#555;margin-bottom:5px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07 <span style="color:#1a7c3e;font-weight:600">(\u0e41\u0e01\u0e49\u0e44\u0e02)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+eC+'</div></div>':'')
-      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px">'
+      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px;'+(isAdmin?'opacity:0.4;pointer-events:none;':'')+'">'
       +'<label style="font-size:11px"><input type="checkbox" id="pa_'+k+'"> \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pe_'+k+'"> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pd_'+k+'"> \u0e25\u0e1a\u0e44\u0e14\u0e49</label>'
@@ -891,10 +910,7 @@ window.renderSystem = function(){
       +'<label style="font-size:11px"><input type="checkbox" id="pp_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pu_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label>'
       +'</div>'
-      +'<div style="margin:6px 0 8px">'
-      +'<label style="font-size:11px">Password ใหม่ (admin เท่านั้น)</label>'
-      +'<input id="upw_'+k+'" type="text" placeholder="\u0e40ว้นว่างถ้าไม่ต้องการเปลี่ยน" style="width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:7px;font-size:12px;background:#fff">'
-      +'</div>'
+      
       +(isAdmin?'':'<button onclick="window.updUser(\''+k+'\')" style="background:#E8470A;color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:12px;cursor:pointer">&#128190; \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01</button>')
       +'</div>';
   }).join('');
@@ -1120,6 +1136,7 @@ window.dDr = async function(e){
     <div class="lf"><label>รหัสผ่าน</label><input type="password" id="lP" placeholder="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')window.tryLogin()"></div>
     <button class="lbtn" onclick="window.tryLogin()">เข้าสู่ระบบ</button>
     <div class="lerr" id="lErr"></div>
+    <div style="text-align:center;margin-top:10px"><a href="#" onclick="window.doForgotPassword();return false;" style="font-size:12px;color:#E8470A;text-decoration:none">&#128274; ลืมรหัสผ่าน? รับรหัสใหม่ทางอีเมล์</a></div>
     <div class="hint">
       <span class="rb rbs">รหัสทดสอบ</span> &nbsp;
       <span class="rb rbs">ชื่อผู้ใช้</span> test&nbsp;<span class="rb rbs">รหัสผ่าน</span> 123456 &nbsp;
@@ -1184,12 +1201,12 @@ window.dDr = async function(e){
         <div class="fg"><label>Line ID</label><input id="fLine" placeholder="Line ID"></div>
         <div class="fg"><label>ที่อยู่</label><input id="fFb" placeholder="บ้านเลขที่ ถนน ตำบล อำเภอ จังหวัด"></div>
         <div class="fg"><label>สถานะ</label>
-          <select id="fStat"><option value="0">รอติดต่อ</option><option value="1">ติดต่อแล้ว</option><option value="2">ปิดการขาย</option><option value="3">ไม่สนใจ</option></select>
+          <select id="fStat"><option value="0">ไม่สนใจ</option><option value="1">รอติดต่อ</option><option value="2">ติดต่อแล้ว</option><option value="3">ยื่นเอกสาร</option><option value="4">เพิ่มเติมเอกสาร</option><option value="5">อนุมัติ</option><option value="6">ไม่อนุมัติ</option><option value="7">ส่งรถแล้ว</option></select>
         </div>
         <div class="fg"><label>ระดับลูกค้า</label>
           <select id="fHeat"><option value="0">❄️ Cold</option><option value="1">🟡 Warm</option><option value="2">🔥 Hot</option></select>
         </div>
-        <div class="fg"><label>วันนัดติดตาม</label><input type="date" id="fFol"></div>
+        <div class="fg"><label>วันนัดติดตาม</label><input type="date" id="fFol" style="min-height:40px"></div>
         <div class="fg full"><label>แหล่งรายได้ / อาชีพ</label><input id="fInc" placeholder="เช่น ทำนา, ทำสวน..."></div>
         <div class="fg full">
           <div class="slbl">&#128722; สินค้าที่สนใจ (เลือกได้หลายรายการ)</div>
