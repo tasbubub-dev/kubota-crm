@@ -204,42 +204,32 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#f0f0f0;color:#222;min-h
 
 </style>
 </head>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script>
+  <script type="module">
 const LOGO='data:image/jpeg;base64,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';
 // ===== FIREBASE IMPORTS (all on one line each) =====
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ===== FIREBASE INIT =====
 const firebaseConfig = { apiKey:"AIzaSyDRgRJ7eFcvKXJMgtUXwPWliu0DS3CvhhY", authDomain:"kubota-crm.firebaseapp.com", projectId:"kubota-crm", storageBucket:"kubota-crm.firebasestorage.app", messagingSenderId:"621683395275", appId:"1:621683395275:web:182e0b425f83e620c4294e" };
-var userApp; try{userApp=firebase.app('kb-user-admin');}catch(e){userApp=firebase.initializeApp(firebaseConfig,'kb-user-admin');}
-const db = firebase.firestore();
-const auth = firebase.auth();
-const userAuth = userApp.auth();
-userAuth.setPersistence(firebase.auth.Auth.Persistence.NONE).catch(function(e){ console.warn('userAuth persistence',e); });
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const auth = getAuth(app);
 
 // Username -> Firebase Auth email
-let USER_EMAIL = {};
+const USER_EMAIL = { admin:"admin@kubota-crm.app", sale:"sale@kubota-crm.app", viewer:"viewer@kubota-crm.app" };
 
 // ===== LOGO =====
 
 document.getElementById('logoL').src = LOGO;
 
 // ===== LOADING OVERLAY =====
-window.showLoading = window.showLoading=function showLoading(on){ var el=document.getElementById('fbLoading'); if(el) el.style.display=on?'flex':'none'; }
+window.showLoading = function showLoading(on){ var el=document.getElementById('fbLoading'); if(el) el.style.display=on?'flex':'none'; }
 
 // ===== APP DATA =====
-const DEFAULT_USERS = {
-  admin:{email:"admin@kubota-crm.app",role:'admin',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e41\u0e25\u0e23\u0e30\u0e1a\u0e1a',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:true,canUsers:true,viewScope:'all',editScope:'all',viewUsers:[],editUsers:[]}},
-  sale:{email:"sale@kubota-crm.app",role:'sale',name:'\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e02\u0e32\u0e22',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}},
-  viewer:{email:"viewer@kubota-crm.app",role:'viewer',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19',perms:{canAdd:false,canEdit:false,canDelete:false,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}}
-};
-let USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
+const USERS = { admin:{role:'admin',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e41\u0e25\u0e23\u0e30\u0e1a\u0e1a'}, sale:{role:'sale',name:'\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e02\u0e32\u0e22'}, viewer:{role:'viewer',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19'} };
 const RLBL = { admin:'<span class=\"rb rba\">Admin</span>', sale:'<span class=\"rb rbs\">Sale</span>', viewer:'<span class=\"rb rbv\">Viewer</span>' };
-const HEAT_LABEL=['❄️ Cold','🟡 Warm','🔥 Hot'];
-const HEAT_COLOR=['#4a90d9','#e67e22','#e74c3c'];
-const HEAT_BG=['#e8f4fd','#fef5e7','#fdf2f2'];
 const ST = ['\u0e23\u0e2d\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d','\u0e15\u0e34\u0e14\u0e15\u0e48\u0e2d\u0e41\u0e25\u0e49\u0e27','\u0e1b\u0e34\u0e14\u0e01\u0e32\u0e23\u0e02\u0e32\u0e22','\u0e44\u0e21\u0e48\u0e2a\u0e19\u0e43\u0e08'];
 const SC = ['s0','s1','s2','s3'];
 const BU = 'https://www.siamkubota.co.th/wp-content/uploads/';
@@ -272,81 +262,34 @@ const DA_DEF = {
 
 let me=null, custs=[], pdb={}, adb={}, selMC=null, selGrp='', selSer='', selAG='', cart={}, accCart={};
 
-window.xss = window.xss=function xss(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-window.fmt = window.fmt=function fmt(n){ return '\u0e3f'+Number(n||0).toLocaleString(); }
-window.today = window.today=function today(){ return new Date().toISOString().split('T')[0]; }
-window.showT = window.showT=function showT(id,msg,err){ var e=document.getElementById(id); if(!e)return; e.textContent=msg; e.style.background=err?'#c0392b':'#E8470A'; e.classList.add('on'); setTimeout(function(){e.classList.remove('on');},2500); }
-window.updTel = window.updTel=function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
-function basePerm(role){
-  return JSON.parse(JSON.stringify((DEFAULT_USERS[role]||DEFAULT_USERS.sale).perms));
-}
-function rebuildUserEmail(){
-  USER_EMAIL={};
-  Object.keys(USERS).forEach(function(k){ if(USERS[k]&&USERS[k].email) USER_EMAIL[k]=USERS[k].email; });
-}
-function normalizeUser(k,u){
-  u=u||{};
-  var role=u.role||'sale', p=Object.assign(basePerm(role), u.perms||{});
-  p.viewUsers=Array.isArray(p.viewUsers)?p.viewUsers:[];
-  p.editUsers=Array.isArray(p.editUsers)?p.editUsers:[];
-  return {email:u.email||'',role:role,name:u.name||k,perms:p};
-}
-function normalizeUsers(src){
-  var out=JSON.parse(JSON.stringify(DEFAULT_USERS));
-  Object.keys(src||{}).forEach(function(k){ out[k]=normalizeUser(k,src[k]); });
-  Object.keys(out).forEach(function(k){ out[k]=normalizeUser(k,out[k]); });
-  USERS=out; rebuildUserEmail();
-}
-normalizeUsers(USERS);
-window.userLabel=function(k){ return USERS[k]?(USERS[k].name||k):k; }
-window.canManageUsers=function(){ return !!(USERS[me]&&USERS[me].perms&&USERS[me].perms.canUsers); }
-window.canManageProducts=function(){ return !!(USERS[me]&&USERS[me].perms&&USERS[me].perms.canProducts); }
-window.canAddCustomer=function(){ return !!(USERS[me]&&USERS[me].perms&&USERS[me].perms.canAdd); }
-function inOwnerScope(c,scope,allowed){
-  var owner=c.owner||'';
-  if(scope==='all') return true;
-  if(owner===me) return true;
-  if(scope==='selected') return (allowed||[]).indexOf(owner)>-1;
-  return false;
-}
-window.canViewCustomer=function(c){ var p=(USERS[me]&&USERS[me].perms)||{}; return inOwnerScope(c,p.viewScope||'own',p.viewUsers||[]); }
-window.canEditCustomer=function(c){ var p=(USERS[me]&&USERS[me].perms)||{}; return !!p.canEdit&&inOwnerScope(c,p.editScope||'own',p.editUsers||[]); }
-window.canDeleteCustomer=function(c){ var p=(USERS[me]&&USERS[me].perms)||{}; return !!p.canDelete&&inOwnerScope(c,p.editScope||'own',p.editUsers||[]); }
-window.visibleCusts=function(){ return custs.filter(function(c){ return canViewCustomer(c); }); }
+window.xss = function xss(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+window.fmt = function fmt(n){ return '\u0e3f'+Number(n||0).toLocaleString(); }
+window.today = function today(){ return new Date().toISOString().split('T')[0]; }
+window.showT = function showT(id,msg,err){ var e=document.getElementById(id); if(!e)return; e.textContent=msg; e.style.background=err?'#c0392b':'#E8470A'; e.classList.add('on'); setTimeout(function(){e.classList.remove('on');},2500); }
+window.updTel = function updTel(){ var v=document.getElementById('fTel').value.replace(/\D/g,''); var c=document.getElementById('telCnt'); c.textContent=v.length+'/10'; c.className='tel-cnt'+(v.length===10?' ok':v.length>0?' err':''); }
 
 // ===== FIREBASE DATA =====
-window.loadUsers = async function(){
-  try{
-    var r=await db.doc('kb_data/users').get();
-    normalizeUsers(r.exists()?r.data().users:null);
-  }catch(e){
-    try{ normalizeUsers(JSON.parse(localStorage.getItem('kb_users')||'null')||USERS); }catch(_){ normalizeUsers(USERS); }
-  }
-}
-window.saveUsers = async function(){ localStorage.setItem('kb_users',JSON.stringify(USERS)); try{ await db.doc('kb_data/users').set({users:USERS}); }catch(e){ console.error('saveUsers',e); throw e; } }
 window.loadData = async function(){
   showLoading(true);
-  await loadUsers();
-  try{ var r1=await db.doc('kb_data/products').get(); pdb=r1.exists?r1.data().value:JSON.parse(JSON.stringify(DP)); }catch(e){ pdb=JSON.parse(JSON.stringify(DP)); }
-  try{ var r2=await db.doc('kb_data/accessories').get(); adb=r2.exists?r2.data().value:JSON.parse(JSON.stringify(DA_DEF)); }catch(e){ adb=JSON.parse(JSON.stringify(DA_DEF)); }
-  try{ var r3=await db.doc('kb_data/customers').get(); custs=r3.exists?r3.data().list:[]; }catch(e){ custs=[]; }
+  try{ var r1=await getDoc(doc(db,'kb_data','products')); pdb=r1.exists()?r1.data().value:JSON.parse(JSON.stringify(DP)); }catch(e){ pdb=JSON.parse(JSON.stringify(DP)); }
+  try{ var r2=await getDoc(doc(db,'kb_data','accessories')); adb=r2.exists()?r2.data().value:JSON.parse(JSON.stringify(DA_DEF)); }catch(e){ adb=JSON.parse(JSON.stringify(DA_DEF)); }
+  try{ var r3=await getDoc(doc(db,'kb_data','customers')); custs=r3.exists()?r3.data().list:[]; }catch(e){ custs=[]; }
   showLoading(false);
   renderPS(); renderAS(); refresh();
 }
-window.saveCusts = async function(){ try{ await db.doc('kb_data/customers').set({list:custs}); }catch(e){ console.error('saveCusts',e); } }
-window.saveProds = async function(){ try{ await db.doc('kb_data/products').set({value:pdb}); }catch(e){ console.error('saveProds',e); } }
-window.saveAcc = async function(){   try{ await db.doc('kb_data/accessories').set({value:adb}); }catch(e){ console.error('saveAcc',e); } }
+window.saveCusts = async function(){ try{ await setDoc(doc(db,'kb_data','customers'),{list:custs}); }catch(e){ console.error('saveCusts',e); } }
+window.saveProds = async function(){ try{ await setDoc(doc(db,'kb_data','products'),{value:pdb}); }catch(e){ console.error('saveProds',e); } }
+window.saveAcc = async function(){   try{ await setDoc(doc(db,'kb_data','accessories'),{value:adb}); }catch(e){ console.error('saveAcc',e); } }
 
 // ===== AUTH =====
 window.tryLogin = async function(){
   var u=(document.getElementById('lU').value||'').trim();
   var p=document.getElementById('lP').value||'';
-  await loadUsers();
   var email=USER_EMAIL[u];
   if(!email){ var e=document.getElementById('lErr'); e.textContent='\u0e0a\u0e37\u0e48\u0e2d\u0e1c\u0e39\u0e49\u0e43\u0e0a\u0e49\u0e44\u0e21\u0e48\u0e16\u0e39\u0e01\u0e15\u0e49\u0e2d\u0e07'; setTimeout(function(){e.textContent='';},2000); return; }
   showLoading(true);
   try{
-    await auth.signInWithEmailAndPassword(email, p);
+    await signInWithEmailAndPassword(auth, email, p);
   } catch(err){
     showLoading(false);
     var e=document.getElementById('lErr');
@@ -362,25 +305,23 @@ window.tryLogin = async function(){
 };
 window.doOut = async function(){
   me=null; cart={}; accCart={};
-  await auth.signOut();
+  await signOut(auth);
   document.getElementById('pgA').style.display='none';
   document.getElementById('pgL').style.display='flex';
   document.getElementById('lU').value=''; document.getElementById('lP').value='';
 };
-auth.onAuthStateChanged(async function(user){
+onAuthStateChanged(auth, function(user){
   if(user){
-    await loadUsers();
     var found=Object.keys(USER_EMAIL).find(function(k){ return USER_EMAIL[k]===user.email; });
-    if(!found){ auth.signOut(); return; }
+    if(!found){ signOut(auth); return; }
     me=found;
     document.getElementById('pgL').style.display='none';
     document.getElementById('pgA').style.display='flex';
     document.getElementById('logoH').src=LOGO;
     document.getElementById('hN').textContent=USERS[me].name;
-    document.getElementById('hR').innerHTML=RLBL[USERS[me].role]||RLBL.sale;
-    document.getElementById('tAdd').style.display=canAddCustomer()?'':'none';
-    document.getElementById('tProd').style.display=canManageProducts()?'':'none';
-    document.getElementById('tSys').style.display=canManageUsers()?'':'none';
+    document.getElementById('hR').innerHTML=RLBL[me];
+    document.getElementById('tAdd').style.display=USERS[me].role!=='viewer'?'':'none';
+    document.getElementById('tAdm').style.display=USERS[me].role==='admin'?'':'none';
     loadData();
   } else {
     me=null;
@@ -429,9 +370,9 @@ window.renderAS = function(){
 window.setAG=function(g){ selAG=g; renderAS(); };
 window.togA=function(n,p,img){ if(accCart[n]) delete accCart[n]; else accCart[n]={n:n,p:p,q:1,img:img}; renderAS(); renderCW(); };
 
-window.ciRow = window.ciRow=function ciRow(it,t){
+window.ciRow = function ciRow(it,t){
   var isA=t==='a', qc=isA?' g':'', pc=isA?' g':'', ico=isA?'&#9881;':'&#128668;';
-  return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">':'<div class="ciph">'+ico+'</div>')+'<div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
+  return '<div class="ci">'+(it.img?'<img src="'+it.img+'" onerror="this.style.display=\'none\'">'  :'')+'<div class="ciph">'+ico+'</div><div class="cin">'+xss(it.n)+'</div>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\',-1)">&#8722;</button>'+'<span class="qn">'+it.q+'</span>'+'<button class="qb'+qc+'" onclick="'+(isA?'adjA':'adjQ')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  ,1)">&#43;</button>'+'<div class="cip'+pc+'">'+fmt(it.p*it.q)+'</div>'+'<button class="cdel" onclick="'+(isA?'delA':'delP')+'(\'' +it.n.replace(/'/g,"\\'")+'\'  )">&#10005;</button></div>';
 }
 window.renderCW = function(){
   var mi=Object.values(cart), ai=Object.values(accCart);
@@ -451,17 +392,18 @@ window.delA=function(n){ delete accCart[n]; renderAS(); renderCW(); };
 // ===== CUSTOMER LIST =====
 window.renderList = function(){
   var q=(document.getElementById('srch').value||'').toLowerCase(), sf=document.getElementById('fSt').value;
-  var list=visibleCusts().slice().filter(function(c){
+  var canEdit=USERS[me]&&USERS[me].role!=='viewer';
+  var list=custs.slice().filter(function(c){
     var pn=(c.cart||[]).map(function(x){ return x.n; }).concat((c.accCart||[]).map(function(x){ return x.n; }));
     var m=!q||[c.name,c.tel,c.income].concat(pn).some(function(f){ return f&&String(f).toLowerCase().includes(q); });
     return m&&(sf===''||String(c.status||0)===sf);
   }).reverse();
   var el=document.getElementById('listW');
-  if(!list.length){ el.innerHTML='<div class="empty">'+(visibleCusts().length?'\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25':'\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32')+'</div>'; return; }
+  if(!list.length){ el.innerHTML='<div class="empty">'+(custs.length?'\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25':'\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32')+'</div>'; return; }
   el.innerHTML=list.map(function(c){
     var st=c.status||0, mi=c.cart||[], ai=c.accCart||[];
     var gt=mi.reduce(function(s,x){ return s+x.p*x.q; },0)+ai.reduce(function(s,x){ return s+x.p*x.q; },0);
-    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+(c.owner?'<div class="cd">\u0e1c\u0e39\u0e49\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01: '+xss(userLabel(c.owner))+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+((canEditCustomer(c)||canDeleteCustomer(c))?'<div style="display:flex;gap:5px">'+(canEditCustomer(c)?'<button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button>':'')+(canDeleteCustomer(c)?'<button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button>':'')+'</div>':'')+'</div></div>';
+    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+(canEdit?'<div style="display:flex;gap:5px"><button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button><button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button></div>':'')+'</div></div>';
   }).join('');
 }
 
@@ -473,135 +415,80 @@ window.clearForm=function(){
   renderPS(); renderAS(); renderCW();
 };
 window.saveCustomer=async function(){
-  if(!me){ return; }
   var name=(document.getElementById('fName').value||'').trim();
   if(!name){ showT('t2','\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e0a\u0e37\u0e48\u0e2d',true); return; }
   var tel=(document.getElementById('fTel').value||'').replace(/\D/g,'');
   if(tel.length>0&&tel.length!==10){ showT('t2','\u0e40\u0e1a\u0e2d\u0e23\u0e4c\u0e42\u0e17\u0e23\u0e15\u0e49\u0e2d\u0e07\u0e21\u0e35 10 \u0e2b\u0e25\u0e31\u0e01',true); return; }
   var eid=document.getElementById('fName').dataset.eid;
-  var old=eid?custs.find(function(c){ return c.id===parseInt(eid); }):null;
-  if(eid&&!old){ showT('t2','\u0e44\u0e21\u0e48\u0e1e\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25',true); return; }
-  if(eid&&!canEditCustomer(old)){ showT('t2','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e41\u0e01\u0e49\u0e44\u0e02',true); return; }
-  if(!eid&&!canAddCustomer()){ showT('t2','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32',true); return; }
-  var d={id:eid?parseInt(eid):Date.now(),owner:old?(old.owner||me):me,createdBy:old?(old.createdBy||old.owner||me):me,name:name,date:document.getElementById('fDate').value,tel:tel,line:(document.getElementById('fLine').value||'').trim(),fb:(document.getElementById('fFb').value||'').trim(),cart:Object.values(cart),accCart:Object.values(accCart),income:(document.getElementById('fInc').value||'').trim(),status:parseInt(document.getElementById('fStat').value||0),heat:parseInt((document.getElementById('fHeat')||{value:'0'}).value)||0,followup:document.getElementById('fFol').value,note:(document.getElementById('fNote').value||'').trim(),updatedBy:me,updatedAt:new Date().toISOString()};
+  var d={id:eid?parseInt(eid):Date.now(),name:name,date:document.getElementById('fDate').value,tel:tel,line:(document.getElementById('fLine').value||'').trim(),fb:(document.getElementById('fFb').value||'').trim(),cart:Object.values(cart),accCart:Object.values(accCart),income:(document.getElementById('fInc').value||'').trim(),status:parseInt(document.getElementById('fStat').value||0),followup:document.getElementById('fFol').value,note:(document.getElementById('fNote').value||'').trim()};
   if(eid){ var i=custs.findIndex(function(c){ return c.id===parseInt(eid); }); if(i>-1) custs[i]=d; } else custs.push(d);
   await saveCusts(); clearForm(); goTab('list',0); refresh(); showT('t1',eid?'\u0e41\u0e01\u0e49\u0e44\u0e02\u0e41\u0e25\u0e49\u0e27 \u2713':'\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01\u0e41\u0e25\u0e49\u0e27 \u2713');
 };
 window.editC=function(id){
   var c=custs.find(function(x){ return x.id===id; }); if(!c) return;
-  if(!canEditCustomer(c)){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e41\u0e01\u0e49\u0e44\u0e02',true); return; }
   goTab('add',1);
   var fn=document.getElementById('fName'); fn.value=c.name; fn.dataset.eid=c.id;
   document.getElementById('fDate').value=c.date||''; document.getElementById('fTel').value=c.tel||''; updTel();
   document.getElementById('fLine').value=c.line||''; document.getElementById('fFb').value=c.fb||'';
   document.getElementById('fInc').value=c.income||''; document.getElementById('fStat').value=String(c.status||0);
-  var _fh=document.getElementById('fHeat');if(_fh)_fh.value=String(c.heat||0);
   document.getElementById('fFol').value=c.followup||''; document.getElementById('fNote').value=c.note||'';
   cart={}; (c.cart||[]).forEach(function(it){ cart[it.n]={n:it.n,p:it.p,q:it.q,img:it.img||''}; });
   accCart={}; (c.accCart||[]).forEach(function(it){ accCart[it.n]={n:it.n,p:it.p,q:it.q,img:it.img||''}; });
   renderPS(); renderAS(); renderCW();
 };
 window.delC=async function(id){
-  var c=custs.find(function(x){ return x.id===id; }); if(!c) return;
-  if(!canDeleteCustomer(c)){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e25\u0e1a',true); return; }
   if(!confirm('\u0e25\u0e1a\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e19\u0e35\u0e49?')) return;
   custs=custs.filter(function(c){ return c.id!==id; }); await saveCusts(); refresh(); showT('t1','\u0e25\u0e1a\u0e41\u0e25\u0e49\u0e27',true);
 };
 
 window.refresh = function(){
-  var t=today(), m=t.slice(0,7), vc=visibleCusts();
-  document.getElementById('hC').textContent=vc.length+' \u0e23\u0e32\u0e22';
-  document.getElementById('sA').textContent=vc.length;
-  document.getElementById('sT').textContent=vc.filter(function(c){ return c.date===t; }).length;
-  document.getElementById('sM').textContent=vc.filter(function(c){ return c.date&&c.date.startsWith(m); }).length;
-  document.getElementById('sC').textContent=vc.filter(function(c){ return c.status==2; }).length;
+  var t=today(), m=t.slice(0,7);
+  document.getElementById('hC').textContent=custs.length+' \u0e23\u0e32\u0e22';
+  document.getElementById('sA').textContent=custs.length;
+  document.getElementById('sT').textContent=custs.filter(function(c){ return c.date===t; }).length;
+  document.getElementById('sM').textContent=custs.filter(function(c){ return c.date&&c.date.startsWith(m); }).length;
+  document.getElementById('sC').textContent=custs.filter(function(c){ return c.status==2; }).length;
   renderList(); renderFollow(); renderPrev();
 }
 window.goTab=function(name,idx){
-  if(name==='add'&&!canAddCustomer()&&!document.getElementById('fName').dataset.eid){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32',true); return; }
-  if(name==='products'&&!canManageProducts()){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32',true); return; }
-  if(name==='system'&&!canManageUsers()){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e23\u0e30\u0e1a\u0e1a',true); return; }
   document.querySelectorAll('.pane').forEach(function(p){ p.classList.remove('on'); });
   document.querySelectorAll('.tab').forEach(function(t,i){ t.classList.toggle('on',i===idx); });
   document.getElementById('pane-'+name).classList.add('on');
-  if(name==='export') renderExportOptions();
-  if(name==='products') renderAdmin();
-  if(name==='system') renderSystem();
+  if(name==='admin') renderAdmin();
   if(name==='add'&&!document.getElementById('fName').dataset.eid) document.getElementById('fDate').value=today();
 };
 
 window.renderFollow = function(){
   var t=today(), d7=new Date(); d7.setDate(d7.getDate()+7); var d7s=d7.toISOString().split('T')[0];
-  var vc=visibleCusts();
-  var due=vc.filter(function(c){ return c.followup&&c.followup<=t&&c.status!=2&&c.status!=3; });
-  var soon=vc.filter(function(c){ return c.followup&&c.followup>t&&c.followup<=d7s; });
-  var pend=vc.filter(function(c){ return !c.status||c.status==0; });
-  function fc(c){ var st=c.status||0; var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); return '<div class="fi"><div class="fii"><div class="fin">'+xss(c.name)+'</div><div class="fis">'+(c.tel||'')+(c.followup?' &middot; \u0e19\u0e31\u0e14 '+c.followup:'')+(tot?' &middot; '+fmt(tot):'')+'</div></div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span>'+(canEditCustomer(c)?'<button class="bic" onclick="editC('+c.id+');goTab(\'add\',1)">&#9999;</button>':'')+'</div>'; }
+  var due=custs.filter(function(c){ return c.followup&&c.followup<=t&&c.status!=2&&c.status!=3; });
+  var soon=custs.filter(function(c){ return c.followup&&c.followup>t&&c.followup<=d7s; });
+  var pend=custs.filter(function(c){ return !c.status||c.status==0; });
+  function fc(c){ var st=c.status||0; var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); return '<div class="fi"><div class="fii"><div class="fin">'+xss(c.name)+'</div><div class="fis">'+(c.tel||'')+(c.followup?' &middot; \u0e19\u0e31\u0e14 '+c.followup:'')+(tot?' &middot; '+fmt(tot):'')+'</div></div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span><button class="bic" onclick="editC('+c.id+');goTab(\'add\',1)">&#9999;</button></div>'; }
   document.getElementById('fDue').innerHTML=due.length?due.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
   document.getElementById('fSoon').innerHTML=soon.length?soon.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
   document.getElementById('fPend').innerHTML=pend.length?pend.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
 }
 window.renderPrev = function(){
   var el=document.getElementById('prevT');
-  var vc=visibleCusts();
-  if(!vc.length){ el.innerHTML='<div style="font-size:13px;color:#aaa;padding:10px 0">\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</div>'; return; }
-  var rows=vc.slice().reverse().slice(0,10);
+  if(!custs.length){ el.innerHTML='<div style="font-size:13px;color:#aaa;padding:10px 0">\u0e22\u0e31\u0e07\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</div>'; return; }
+  var rows=custs.slice().reverse().slice(0,10);
   var t='<table style="width:100%;border-collapse:collapse;font-size:12px"><thead><tr style="background:#fff0eb">'+['\u0e0a\u0e37\u0e48\u0e2d','\u0e27\u0e31\u0e19\u0e17\u0e35\u0e48','\u0e40\u0e1a\u0e2d\u0e23\u0e4c','\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e2b\u0e25\u0e31\u0e01','\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e40\u0e2a\u0e23\u0e34\u0e21','\u0e23\u0e27\u0e21\u0e23\u0e32\u0e04\u0e32','\u0e2a\u0e16\u0e32\u0e19\u0e30'].map(function(h){ return '<th style="padding:6px 8px;text-align:left;border:1px solid #eee;color:#C73D08">'+h+'</th>'; }).join('')+'</tr></thead><tbody>';
   rows.forEach(function(c){ var mp=(c.cart||[]).map(function(x){ return xss(x.n)+'&times;'+x.q; }).join(', '); var ap=(c.accCart||[]).map(function(x){ return xss(x.n)+'&times;'+x.q; }).join(', '); var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); t+='<tr>'+[c.name,c.date||'',c.tel||'',mp,ap,tot?fmt(tot):'',ST[c.status||0]].map(function(v){ return '<td style="padding:5px 8px;border:1px solid #eee">'+xss(String(v))+'</td>'; }).join('')+'</tr>'; });
-  el.innerHTML=t+'</tbody></table>'+(vc.length>10?'<div style="font-size:11px;color:#aaa;margin-top:5px">\u0e41\u0e2a\u0e14\u0e07 10 \u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14 \u0e08\u0e32\u0e01 '+vc.length+' \u0e23\u0e32\u0e22</div>':'');
-}
-const EXPORT_FIELDS=[
-  {k:'name',l:'ชื่อ',v:function(c){return c.name||''}},
-  {k:'date',l:'วันที่',v:function(c){return c.date||''}},
-  {k:'tel',l:'เบอร์',v:function(c){return c.tel||''}},
-  {k:'line',l:'Line',v:function(c){return c.line||''}},
-  {k:'fb',l:'ที่อยู่',v:function(c){return c.fb||''}},
-  {k:'main',l:'สินค้าหลัก',v:function(c){return (c.cart||[]).map(function(x){return x.n+' x'+x.q+' ('+fmt(x.p*x.q)+')';}).join(' | ')}},
-  {k:'acc',l:'อุปกรณ์เสริม',v:function(c){return (c.accCart||[]).map(function(x){return x.n+' x'+x.q+' ('+fmt(x.p*x.q)+')';}).join(' | ')}},
-  {k:'total',l:'รวมราคา',v:function(c){var t=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){return s+x.p*x.q;},0); return t?fmt(t):''}},
-  {k:'income',l:'อาชีพ',v:function(c){return c.income||''}},
-  {k:'status',l:'สถานะ',v:function(c){return ST[c.status||0]}},
-  {k:'followup',l:'วันนัด',v:function(c){return c.followup||''}},
-  {k:'owner',l:'ผู้บันทึก',v:function(c){return userLabel(c.owner||'')}},
-  {k:'heat',l:'ระดับ',v:function(c){return (typeof HEAT_LABEL!=='undefined'&&HEAT_LABEL[c.heat||0])||''}},
-  {k:'note',l:'หมายเหตุ',v:function(c){return c.note||''}}
-];
-window.renderExportOptions=function(){
-  var el=document.getElementById('expFields'); if(!el) return;
-  el.innerHTML=EXPORT_FIELDS.map(function(f){ return '<label style="font-size:12px;color:#444"><input type="checkbox" class="expF" value="'+f.k+'" checked> '+xss(f.l)+'</label>'; }).join('');
-}
-function selectedExportFields(){
-  var keys=Array.from(document.querySelectorAll('.expF:checked')).map(function(x){return x.value;});
-  var fields=EXPORT_FIELDS.filter(function(f){ return keys.indexOf(f.k)>-1; });
-  return fields.length?fields:EXPORT_FIELDS;
-}
-function exportRows(){
-  var fields=selectedExportFields(), rows=visibleCusts();
-  return {fields:fields, rows:rows};
+  el.innerHTML=t+'</tbody></table>'+(custs.length>10?'<div style="font-size:11px;color:#aaa;margin-top:5px">\u0e41\u0e2a\u0e14\u0e07 10 \u0e25\u0e48\u0e32\u0e2a\u0e38\u0e14 \u0e08\u0e32\u0e01 '+custs.length+' \u0e23\u0e32\u0e22</div>':'');
 }
 window.doCSV=function(){
-  if(!(USERS[me]&&USERS[me].perms&&USERS[me].perms.canExport)){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c Export',true); return; }
-  var data=exportRows();
-  if(!data.rows.length){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25',true); return; }
-  var h=data.fields.map(function(f){return f.l;});
-  var rows=data.rows.map(function(c){ return data.fields.map(function(f){ return '"'+String(f.v(c)).replace(/"/g,'""')+'"'; }).join(','); });
+  if(!custs.length){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25',true); return; }
+  var h=['\u0e0a\u0e37\u0e48\u0e2d','\u0e27\u0e31\u0e19\u0e17\u0e35\u0e48','\u0e40\u0e1a\u0e2d\u0e23\u0e4c','Line','FB','\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e2b\u0e25\u0e31\u0e01','\u0e2d\u0e38\u0e1b\u0e01\u0e23\u0e13\u0e4c\u0e40\u0e2a\u0e23\u0e34\u0e21','\u0e23\u0e27\u0e21\u0e23\u0e32\u0e04\u0e32','\u0e2d\u0e32\u0e0a\u0e35\u0e1e','\u0e2a\u0e16\u0e32\u0e19\u0e30','\u0e27\u0e31\u0e19\u0e19\u0e31\u0e14','\u0e2b\u0e21\u0e32\u0e22\u0e40\u0e2b\u0e15\u0e38'];
+  var rows=custs.map(function(c){ var mp=(c.cart||[]).map(function(x){ return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')'; }).join('|'); var ap=(c.accCart||[]).map(function(x){ return x.n+'x'+x.q+'('+fmt(x.p*x.q)+')'; }).join('|'); var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); return [c.name,c.date||'',c.tel||'',c.line||'',c.fb||'',mp,ap,tot?fmt(tot):'',c.income||'',ST[c.status||0],c.followup||'',c.note||''].map(function(v){ return '"'+String(v).replace(/"/g,'""')+'"'; }).join(','); });
   var a=document.createElement('a'); a.href='data:text/csv;charset=utf-8,\uFEFF'+encodeURIComponent([h.join(',')].concat(rows).join('\n')); a.download='kubota_'+today()+'.csv'; a.click(); showT('t1','Export CSV \u0e41\u0e25\u0e49\u0e27 \u2713');
 };
-window.doPDF=function(){
-  if(!(USERS[me]&&USERS[me].perms&&USERS[me].perms.canExport)){ showT('t1','ไม่มีสิทธิ์ Export',true); return; }
-  var data=exportRows();
-  if(!data.rows.length){ showT('t1','ไม่มีข้อมูล',true); return; }
-  var head=data.fields.map(function(f){ return '<th>'+xss(f.l)+'</th>'; }).join('');
-  var rows=data.rows.slice().reverse().map(function(c){ return '<tr>'+data.fields.map(function(f){ return '<td>'+xss(String(f.v(c)||''))+'</td>'; }).join('')+'</tr>'; }).join('');
-  var css='@page{size:A4 landscape;margin:10mm}body{font-family:sans-serif;font-size:10px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 6px}th{background:#fff0eb;color:#C73D08}';
-  var html='<!DOCTYPE html><html><head><title>KUBOTA</title><style>'+css+'<'+'/'+'style><'+'/'+'head><body><table><thead><tr>'+head+'</tr></thead><tbody>'+rows+'</tbody></table><'+'/body><'+'/html>';
+window.doPrint=function(){
+  if(!custs.length){ showT('t1','\u0e44\u0e21\u0e48\u0e21\u0e35\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25',true); return; }
+  var rows=custs.slice().reverse().map(function(c){ var mp=(c.cart||[]).map(function(x){ return xss(x.n)+'x'+x.q; }).join(', '); var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); return '<tr><td>'+xss(c.name)+'</td><td>'+(c.date||'')+'</td><td>'+(c.tel||'')+'</td><td>'+mp+'</td><td>'+(tot?fmt(tot):'')+'</td><td>'+ST[c.status||0]+'</td></tr>'; }).join('');
   var w=window.open('','_blank');
-  w.document.write(html);
-  w.document.close();
-  setTimeout(function(){ w.print(); },300);
-}
-window.doPrint=window.doPDF;
-window.doPrint=window.doPDF;
+  w.document.write('<html><head><title>KUBOTA PANTRACTOR</title><style>body{font-family:sans-serif;font-size:11px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:5px 8px}th{background:#fff0eb;color:#C73D08}h2{color:#E8470A;margin-bottom:10px}</style></head><body><h2>KUBOTA PANTRACTOR ('+custs.length+' \u0e23\u0e32\u0e22) - '+today()+'</h2><table><thead><tr><th>\u0e0a\u0e37\u0e48\u0e2d</th><th>\u0e27\u0e31\u0e19\u0e17\u0e35\u0e48</th><th>\u0e40\u0e1a\u0e2d\u0e23\u0e4c</th><th>\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</th><th>\u0e23\u0e27\u0e21\u0e23\u0e32\u0e04\u0e32</th><th>\u0e2a\u0e16\u0e32\u0e19\u0e30</th></tr></thead><tbody>'+rows+'</tbody></table></body></html>');
+  w.document.close(); w.print();
+};
 
 // ===== ADMIN =====
 window.renderAdmin = function(){
@@ -611,38 +498,6 @@ window.renderAdmin = function(){
     setTimeout(window.renderAdmin, 800); return;
   }
   var h='';
-  if(false&&canManageUsers()){
-    var userKeys=Object.keys(USERS);
-    h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128272; จัดการ User และสิทธิ์</div>';
-    h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:14px;margin-bottom:12px;background:#FFF0EB">';
-    h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">';
-    h+='<div class="fg"><label>Username</label><input id="nuKey" placeholder="เช่น sale2"></div>';
-    h+='<div class="fg"><label>ชื่อที่แสดง</label><input id="nuName" placeholder="ชื่อพนักงาน"></div>';
-    h+='<div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app"></div>';
-    h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="อย่างน้อย 6 ตัว"></div>';
-    h+='<div class="fg"><label>สิทธิหลัก</label><select id="nuRole"><option value="sale">User ทั่วไป</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>';
-    h+='<div class="fg"><label>เพิ่มข้อมูลลูกค้า</label><select id="nuAdd"><option value="1">ทำได้</option><option value="0">ไม่ได้</option></select></div>';
-    h+='</div>';
-    h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">';
-    h+='<div class="fg"><label>ดูข้อมูลของใคร</label><select id="nuViewScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div>';
-    h+='<div class="fg"><label>แก้ไขข้อมูลของใคร</label><select id="nuEditScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div>';
-    h+='</div>';
-    h+='<div style="font-size:11px;color:#666;margin:6px 0 4px">เลือกเจ้าของข้อมูลที่อนุญาต เมื่อใช้โหมด "เลือกเจ้าของข้อมูล"</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">'+userKeys.map(function(k){ return '<label style="font-size:12px;color:#444"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> ดู '+xss(userLabel(k))+'</label><label style="font-size:12px;color:#444"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> แก้ '+xss(userLabel(k))+'</label>'; }).join('')+'</div>';
-    h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0"><label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> แก้ไขได้</label><label style="font-size:12px"><input type="checkbox" id="nuDel" checked> ลบได้</label><label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export ได้</label><label style="font-size:12px"><input type="checkbox" id="nuProd"> จัดการสินค้า</label><label style="font-size:12px"><input type="checkbox" id="nuUsers"> จัดการ User</label></div>';
-    h+='<button class="bsave" onclick="window.addUser()">&#43; สร้าง User</button>';
-    h+='</div>';
-    h+='<div style="border:1.5px solid #ddd;border-radius:10px;background:#fff;margin-bottom:14px;overflow:hidden">';
-    h+=userKeys.map(function(k){
-      var u=USERS[k], p=u.perms||{}, others=userKeys.filter(function(x){return x!==k;});
-      return '<div style="padding:10px 12px;border-bottom:1px solid #eee"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>'+xss(k)+'</b> '+(RLBL[u.role]||RLBL.sale)+'<div style="font-size:11px;color:#888">'+xss(u.name)+' &middot; '+xss(u.email||'')+'</div></div><button class="bic bdl" onclick="window.delUser(\''+k.replace(/'/g,"\\'")+'\')">&#128465;</button></div>'
-      +'<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px"><input id="un_'+k+'" value="'+xss(u.name)+'" style="padding:6px;border:1px solid #ddd;border-radius:6px"><select id="ur_'+k+'" style="padding:6px;border:1px solid #ddd;border-radius:6px"><option value="sale" '+(u.role==='sale'?'selected':'')+'>User ทั่วไป</option><option value="viewer" '+(u.role==='viewer'?'selected':'')+'>Viewer</option><option value="admin" '+(u.role==='admin'?'selected':'')+'>Admin</option></select><select id="uvs_'+k+'" style="padding:6px;border:1px solid #ddd;border-radius:6px"><option value="own" '+(p.viewScope==='own'?'selected':'')+'>ดูเฉพาะตัวเอง</option><option value="selected" '+(p.viewScope==='selected'?'selected':'')+'>ดูบางคน</option><option value="all" '+(p.viewScope==='all'?'selected':'')+'>ดูทั้งหมด</option></select><select id="ues_'+k+'" style="padding:6px;border:1px solid #ddd;border-radius:6px"><option value="own" '+(p.editScope==='own'?'selected':'')+'>แก้เฉพาะตัวเอง</option><option value="selected" '+(p.editScope==='selected'?'selected':'')+'>แก้บางคน</option><option value="all" '+(p.editScope==='all'?'selected':'')+'>แก้ทั้งหมด</option></select></div>'
-      +'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">'+others.map(function(o){ return '<label style="font-size:11px"><input type="checkbox" class="vu_'+k+'" value="'+xss(o)+'" '+((p.viewUsers||[]).indexOf(o)>-1?'checked':'')+'> ดู '+xss(userLabel(o))+'</label><label style="font-size:11px"><input type="checkbox" class="eu_'+k+'" value="'+xss(o)+'" '+((p.editUsers||[]).indexOf(o)>-1?'checked':'')+'> แก้ '+xss(userLabel(o))+'</label>'; }).join('')+'</div>'
-      +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><label style="font-size:11px"><input type="checkbox" id="pa_'+k+'" '+(p.canAdd?'checked':'')+'> เพิ่ม</label><label style="font-size:11px"><input type="checkbox" id="pe_'+k+'" '+(p.canEdit?'checked':'')+'> แก้ไข</label><label style="font-size:11px"><input type="checkbox" id="pd_'+k+'" '+(p.canDelete?'checked':'')+'> ลบ</label><label style="font-size:11px"><input type="checkbox" id="px_'+k+'" '+(p.canExport?'checked':'')+'> Export</label><label style="font-size:11px"><input type="checkbox" id="pp_'+k+'" '+(p.canProducts?'checked':'')+'> สินค้า</label><label style="font-size:11px"><input type="checkbox" id="pu_'+k+'" '+(p.canUsers?'checked':'')+'> User</label><button class="bic" onclick="window.updUser(\''+k.replace(/'/g,"\\'")+'\')">&#128190; บันทึกสิทธิ์</button></div></div>';
-    }).join('');
-    h+='</div>';
-  }
-  if(!canManageProducts()){ el.innerHTML=h; return; }
   // ─── สินค้าหลัก ───────────────────────────────
   h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128668; จัดการสินค้าหลัก</div>';
   Object.keys(pdb.agri.groups).forEach(function(grp){
@@ -737,108 +592,6 @@ window.renderAdmin = function(){
   h+='<div style="margin-top:10px"><button onclick="window.resetAll()" style="background:#fff;color:#c0392b;border:1.5px solid #c0392b;padding:8px 14px;border-radius:8px;font-size:12px;cursor:pointer">&#8635; รีเซ็ตสินค้าทั้งหมด</button></div>';
   el.innerHTML=h;
 }
-window.renderSystem = function(){
-  var el=document.getElementById('sysW');
-  if(!canManageUsers()){ el.innerHTML='<div class="empty">ไม่มีสิทธิ์จัดการระบบ</div>'; return; }
-  var userKeys=Object.keys(USERS);
-  var ownerOptions=userKeys.map(function(k){ return '<option value="'+xss(k)+'">'+xss(userLabel(k))+'</option>'; }).join('');
-  var h='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128272; จัดการ User และสิทธิ์</div>';
-  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:14px;margin-bottom:12px;background:#FFF0EB">';
-  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="sale2"></div><div class="fg"><label>ชื่อที่แสดง</label><input id="nuName" placeholder="ชื่อพนักงาน"></div><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app"></div><div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="อย่างน้อย 6 ตัว"></div><div class="fg"><label>สิทธิหลัก</label><select id="nuRole"><option value="sale">User ทั่วไป</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div><div class="fg"><label>เพิ่มลูกค้า</label><select id="nuAdd"><option value="1">ทำได้</option><option value="0">ไม่ได้</option></select></div></div>';
-  h+='<div class="g2"><div class="fg"><label>ดูข้อมูลของใคร</label><select id="nuViewScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div><div class="fg"><label>แก้ไขข้อมูลของใคร</label><select id="nuEditScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div></div>';
-  h+='<div style="font-size:11px;color:#666;margin:8px 0 4px">เลือกเจ้าของข้อมูลที่อนุญาต เมื่อใช้โหมด "เลือกเจ้าของข้อมูล"</div>';
-  h+='<select id="nuViewUsers" multiple style="width:100%;min-height:74px;padding:6px;border:1px solid #ddd;border-radius:8px;margin-bottom:6px">'+ownerOptions+'</select>';
-  h+='<select id="nuEditUsers" multiple style="width:100%;min-height:74px;padding:6px;border:1px solid #ddd;border-radius:8px">'+ownerOptions+'</select>';
-  h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin:10px 0"><label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> แก้ไขได้</label><label style="font-size:12px"><input type="checkbox" id="nuDel" checked> ลบได้</label><label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export ได้</label><label style="font-size:12px"><input type="checkbox" id="nuProd"> จัดการสินค้า</label><label style="font-size:12px"><input type="checkbox" id="nuUsers"> จัดการ User</label></div>';
-  h+='<button class="bsave" onclick="window.addUser()">&#43; สร้าง User</button></div>';
-  h+='<div style="border:1.5px solid #ddd;border-radius:10px;background:#fff;margin-bottom:14px;overflow:hidden">';
-  h+=userKeys.map(function(k){
-    var u=USERS[k], p=u.perms||{}, opts=userKeys.filter(function(x){return x!==k;}).map(function(o){ return '<option value="'+xss(o)+'">'+xss(userLabel(o))+'</option>'; }).join('');
-    return '<div style="padding:10px 12px;border-bottom:1px solid #eee"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><div><b>'+xss(k)+'</b> '+(RLBL[u.role]||RLBL.sale)+'<div style="font-size:11px;color:#888">'+xss(u.name)+' &middot; '+xss(u.email||'')+'</div></div><button class="bic bdl" onclick="window.delUser(\''+k.replace(/'/g,"\\'")+'\')">&#128465;</button></div>'
-    +'<div class="g2" style="margin-top:8px"><div class="fg"><label>ชื่อ</label><input id="un_'+k+'" value="'+xss(u.name)+'"></div><div class="fg"><label>สิทธิหลัก</label><select id="ur_'+k+'"><option value="sale" '+(u.role==='sale'?'selected':'')+'>User ทั่วไป</option><option value="viewer" '+(u.role==='viewer'?'selected':'')+'>Viewer</option><option value="admin" '+(u.role==='admin'?'selected':'')+'>Admin</option></select></div><div class="fg"><label>ดูข้อมูล</label><select id="uvs_'+k+'"><option value="own" '+(p.viewScope==='own'?'selected':'')+'>เฉพาะตัวเอง</option><option value="selected" '+(p.viewScope==='selected'?'selected':'')+'>เลือกเจ้าของข้อมูล</option><option value="all" '+(p.viewScope==='all'?'selected':'')+'>ทั้งหมด</option></select></div><div class="fg"><label>แก้ข้อมูล</label><select id="ues_'+k+'"><option value="own" '+(p.editScope==='own'?'selected':'')+'>เฉพาะตัวเอง</option><option value="selected" '+(p.editScope==='selected'?'selected':'')+'>เลือกเจ้าของข้อมูล</option><option value="all" '+(p.editScope==='all'?'selected':'')+'>ทั้งหมด</option></select></div></div>'
-    +'<div class="g2"><div class="fg"><label>เจ้าของข้อมูลที่ดูได้</label><select id="vu_'+k+'" multiple>'+opts+'</select></div><div class="fg"><label>เจ้าของข้อมูลที่แก้ได้</label><select id="eu_'+k+'" multiple>'+opts+'</select></div></div>'
-    +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px"><label style="font-size:11px"><input type="checkbox" id="pa_'+k+'" '+(p.canAdd?'checked':'')+'> เพิ่ม</label><label style="font-size:11px"><input type="checkbox" id="pe_'+k+'" '+(p.canEdit?'checked':'')+'> แก้ไข</label><label style="font-size:11px"><input type="checkbox" id="pd_'+k+'" '+(p.canDelete?'checked':'')+'> ลบ</label><label style="font-size:11px"><input type="checkbox" id="px_'+k+'" '+(p.canExport?'checked':'')+'> Export</label><label style="font-size:11px"><input type="checkbox" id="pp_'+k+'" '+(p.canProducts?'checked':'')+'> สินค้า</label><label style="font-size:11px"><input type="checkbox" id="pu_'+k+'" '+(p.canUsers?'checked':'')+'> User</label><button class="bic" onclick="window.updUser(\''+k.replace(/'/g,"\\'")+'\')">&#128190; บันทึกสิทธิ์</button></div></div>';
-  }).join('');
-  h+='</div>';
-  el.innerHTML=h;
-  userKeys.forEach(function(k){
-    var p=USERS[k].perms||{};
-    ['vu','eu'].forEach(function(prefix){
-      var sel=document.getElementById(prefix+'_'+k), vals=prefix==='vu'?(p.viewUsers||[]):(p.editUsers||[]);
-      if(sel) Array.from(sel.options).forEach(function(o){ o.selected=vals.indexOf(o.value)>-1; });
-    });
-  });
-};
-function checkedVals(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(function(x){return x.value;}); }
-function selectedVals(id){ var el=document.getElementById(id); return el?Array.from(el.selectedOptions).map(function(x){return x.value;}):[]; }
-window.addUser=async function(){
-  if(!canManageUsers()){ showT('t4','ไม่มีสิทธิ์จัดการ User',true); return; }
-  var k=(document.getElementById('nuKey').value||'').trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
-  var name=(document.getElementById('nuName').value||'').trim();
-  var email=(document.getElementById('nuEmail').value||'').trim();
-  var pass=document.getElementById('nuPass').value||'';
-  var role=document.getElementById('nuRole').value||'sale';
-  if(!k||!name||!email||pass.length<6){ showT('t4','กรอก Username, ชื่อ, Email และ Password อย่างน้อย 6 ตัว',true); return; }
-  if(USERS[k]){ showT('t4','Username นี้มีอยู่แล้ว',true); return; }
-  var authStatus='created';
-  try{
-    await userAuth.setPersistence(firebase.auth.Auth.Persistence.NONE);
-    await userAuth.createUserWithEmailAndPassword(email,pass);
-    await userAuth.signOut();
-  }catch(e){
-    if(e.code==='auth/email-already-in-use') authStatus='exists';
-    else {
-      var m='สร้าง Auth ไม่สำเร็จ: '+e.code;
-      if(e.code==='auth/operation-not-allowed') m='ยังไม่ได้เปิด Email/Password ใน Firebase Auth';
-      if(e.code==='auth/weak-password') m='Password ต้องอย่างน้อย 6 ตัว';
-      showT('t4',m,true); console.error('create user auth',e); return;
-    }
-  }
-  var p=basePerm(role);
-  p.canAdd=document.getElementById('nuAdd').value==='1';
-  p.canEdit=document.getElementById('nuEdit').checked;
-  p.canDelete=document.getElementById('nuDel').checked;
-  p.canExport=document.getElementById('nuExp').checked;
-  p.canProducts=document.getElementById('nuProd').checked;
-  p.canUsers=document.getElementById('nuUsers').checked;
-  p.viewScope=document.getElementById('nuViewScope').value;
-  p.editScope=document.getElementById('nuEditScope').value;
-  p.viewUsers=selectedVals('nuViewUsers');
-  p.editUsers=selectedVals('nuEditUsers');
-  USERS[k]={email:email,role:role,name:name,perms:p};
-  rebuildUserEmail();
-  try{ await saveUsers(); renderSystem(); showT('t4',authStatus==='exists'?'เพิ่ม User แล้ว (Email นี้มีใน Auth อยู่แล้ว) ✓':'สร้าง User แล้ว ✓'); }
-  catch(e){ showT('t4','สร้าง Auth แล้ว แต่บันทึกสิทธิ์ลง Firebase ไม่สำเร็จ: '+e.code,true); }
-};
-window.updUser=async function(k){
-  if(!canManageUsers()||!USERS[k]) return;
-  var u=USERS[k], role=document.getElementById('ur_'+k).value||u.role, p=Object.assign(basePerm(role), u.perms||{});
-  u.name=(document.getElementById('un_'+k).value||u.name).trim();
-  u.role=role;
-  p.viewScope=document.getElementById('uvs_'+k).value;
-  p.editScope=document.getElementById('ues_'+k).value;
-  p.viewUsers=selectedVals('vu_'+k);
-  p.editUsers=selectedVals('eu_'+k);
-  p.canAdd=document.getElementById('pa_'+k).checked;
-  p.canEdit=document.getElementById('pe_'+k).checked;
-  p.canDelete=document.getElementById('pd_'+k).checked;
-  p.canExport=document.getElementById('px_'+k).checked;
-  p.canProducts=document.getElementById('pp_'+k).checked;
-  p.canUsers=document.getElementById('pu_'+k).checked;
-  u.perms=p; USERS[k]=u; try{ await saveUsers(); renderSystem(); refresh(); showT('t4','บันทึกสิทธิ์แล้ว ✓'); }catch(e){ showT('t4','บันทึกสิทธิ์ลง Firebase ไม่สำเร็จ: '+e.code,true); }
-};
-window.delUser=async function(k){
-  if(!canManageUsers()||k==='admin'){ showT('t3','ไม่สามารถลบ admin หลักได้',true); return; }
-  if(!USERS[k]) return;
-  if(!confirm('ลบ User นี้ออกจากระบบแอป? บัญชี Firebase Auth จะยังอยู่')) return;
-  delete USERS[k];
-  Object.keys(USERS).forEach(function(x){
-    var p=USERS[x].perms||{};
-    p.viewUsers=(p.viewUsers||[]).filter(function(v){return v!==k;});
-    p.editUsers=(p.editUsers||[]).filter(function(v){return v!==k;});
-  });
-  rebuildUserEmail(); try{ await saveUsers(); renderSystem(); refresh(); showT('t4','ลบ User แล้ว',true); }catch(e){ showT('t4','ลบในเครื่องแล้ว แต่บันทึก Firebase ไม่สำเร็จ: '+e.code,true); }
-};
 window.updP=async function(cat,grp,ser,i,v){ var val=parseInt(v)||0; if(cat==='agri'){ if(pdb.agri.groups[grp]&&pdb.agri.groups[grp][ser]&&pdb.agri.groups[grp][ser][i]) pdb.agri.groups[grp][ser][i].p=val; } else { if(pdb[cat]&&pdb[cat].products&&pdb[cat].products[i]) pdb[cat].products[i].p=val; } await saveProds(); renderPS(); showT('t3','\u0e2d\u0e31\u0e1b\u0e40\u0e14\u0e15\u0e23\u0e32\u0e04\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
 window.delProd=async function(cat,grp,ser,i){ if(!confirm('\u0e25\u0e1a\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e19\u0e35\u0e49?')) return; if(cat==='agri') pdb.agri.groups[grp][ser].splice(i,1); else pdb[cat].products.splice(i,1); await saveProds(); renderAdmin(); renderPS(); showT('t3','\u0e25\u0e1a\u0e41\u0e25\u0e49\u0e27',true); };
 window.addProdA=async function(cat,grp,ser){ var kk=(grp&&ser)?(grp+ser).replace(/\W/g,'_'):cat; var n=(document.getElementById('nn_'+kk)?.value||'').trim(); var p=parseInt(document.getElementById('np_'+kk)?.value||0); if(!n){ showT('t3','\u0e01\u0e23\u0e38\u0e13\u0e32\u0e01\u0e23\u0e2d\u0e01\u0e0a\u0e37\u0e48\u0e2d',true); return; } if(cat==='agri'){ if(!pdb.agri.groups[grp][ser]) pdb.agri.groups[grp][ser]=[]; pdb.agri.groups[grp][ser].push({n:n,p:p,img:''}); } else pdb[cat].products.push({n:n,p:p,img:''}); await saveProds(); renderAdmin(); renderPS(); showT('t3','\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32\u0e41\u0e25\u0e49\u0e27 \u2713'); };
@@ -977,8 +730,7 @@ window.dDr = async function(e){
     <button class="tab" id="tAdd" onclick="window.goTab('add',1)">&#43; เพิ่มลูกค้า</button>
     <button class="tab" onclick="window.goTab('follow',2)">&#128276; ติดตาม</button>
     <button class="tab" onclick="window.goTab('export',3)">&#8659; Export</button>
-    <button class="tab" id="tProd" style="display:none" onclick="window.goTab('products',4)">&#128668; จัดการสินค้า</button>
-    <button class="tab" id="tSys" style="display:none" onclick="window.goTab('system',5)">&#9881; จัดการระบบ</button>
+    <button class="tab" id="tAdm" style="display:none" onclick="window.goTab('admin',4)">&#9881; จัดการสินค้า</button>
   </div>
   <div class="mc">
 
@@ -1018,9 +770,6 @@ window.dDr = async function(e){
         <div class="fg"><label>สถานะ</label>
           <select id="fStat"><option value="0">รอติดต่อ</option><option value="1">ติดต่อแล้ว</option><option value="2">ปิดการขาย</option><option value="3">ไม่สนใจ</option></select>
         </div>
-        <div class="fg"><label>ระดับลูกค้า</label>
-          <select id="fHeat"><option value="0">❄️ Cold</option><option value="1">🟡 Warm</option><option value="2">🔥 Hot</option></select>
-        </div>
         <div class="fg"><label>วันนัดติดตาม</label><input type="date" id="fFol"></div>
         <div class="fg full"><label>แหล่งรายได้ / อาชีพ</label><input id="fInc" placeholder="เช่น ทำนา, ทำสวน..."></div>
         <div class="fg full">
@@ -1056,34 +805,20 @@ window.dDr = async function(e){
     <!-- EXPORT -->
     <div class="pane" id="pane-export">
       <div class="sec-t" style="border-top:none;padding-top:0">&#8659; ส่งออกข้อมูล</div>
-      <div class="psel-wrap">
-        <div class="slbl">เลือกข้อมูลที่ต้องการส่งออก</div>
-        <div class="slbl" style="margin-bottom:6px">&#128100; เลือกข้อมูลของผู้ใด</div>
-        <div id="expUsers" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px"></div>
-        <div class="slbl" style="margin-bottom:6px">&#9745; เลือกชนิดข้อมูล</div>
-        <div id="expFields" style="display:flex;flex-wrap:wrap;gap:10px"></div>
-      </div>
       <div class="eb">
         <button class="bexp" onclick="window.doCSV()">&#128202; Export CSV (Excel)</button>
-        <button class="bexp" onclick="window.doPDF()">&#128196; Export PDF</button>
+        <button class="bexp" onclick="window.doPrint()">&#128424; พิมพ์รายชื่อ</button>
       </div>
       <div id="prevT" style="overflow-x:auto;margin-top:8px"></div>
     </div>
 
-    <!-- PRODUCTS -->
-    <div class="pane" id="pane-products">
+    <!-- ADMIN -->
+    <div class="pane" id="pane-admin">
       <div id="admW"></div>
       <div class="tbar" id="t3"></div>
-    </div>
-
-    <!-- SYSTEM -->
-    <div class="pane" id="pane-system">
-      <div id="sysW"></div>
-      <div class="tbar" id="t4"></div>
     </div>
 
   </div>
 </div>
 
 </body></html>
-
