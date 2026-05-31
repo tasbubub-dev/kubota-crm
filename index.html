@@ -460,7 +460,7 @@ window.renderList = function(){
   el.innerHTML=list.map(function(c){
     var st=c.status||0, mi=c.cart||[], ai=c.accCart||[];
     var gt=mi.reduce(function(s,x){ return s+x.p*x.q; },0)+ai.reduce(function(s,x){ return s+x.p*x.q; },0);
-    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+(c.owner&&c.owner!==me?'<div class="cd" style="color:#E8470A;font-weight:600">&#128100; '+xss(userLabel(c.owner))+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+((canEditCustomer(c)||canDeleteCustomer(c))?'<div style="display:flex;gap:5px">'+(canEditCustomer(c)?'<button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button>':'')+(canDeleteCustomer(c)?'<button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button>':'')+'</div>':'')+'</div></div>';
+    return '<div class="ccard"><div class="ch"><div><div class="cn">'+xss(c.name)+'</div>'+(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')+(c.owner?'<div class="cd">\u0e1c\u0e39\u0e49\u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01: '+xss(userLabel(c.owner))+'</div>':'')+'</div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span></div>'+'<div class="cmeta">'+(c.tel?'<div class="mi">&#128222; '+xss(c.tel)+'</div>':'')+(c.line?'<div class="mi">Line: '+xss(c.line)+'</div>':'')+(c.fb?'<div class="mi">&#128205; '+xss(c.fb)+'</div>':'')+(c.followup?'<div class="mi">&#128197; \u0e19\u0e31\u0e14 '+c.followup+'</div>':'')+(c.income?'<div class="mi">&#127968; '+xss(c.income)+'</div>':'')+'</div>'+(mi.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:8px">'+mi.map(function(x){ return '<span class="ptag">&#128668; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(ai.length?'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+ai.map(function(x){ return '<span class="atag">&#9881; '+xss(x.n)+' &times;'+x.q+' '+fmt(x.p*x.q)+'</span>'; }).join('')+'</div>':'')+(gt?'<div style="font-size:12px;color:#E8470A;font-weight:700;margin-top:4px">\u0e23\u0e27\u0e21 '+fmt(gt)+'</div>':'')+(c.note?'<div class="nota">'+xss(c.note)+'</div>':'')+'<div class="cf"><span style="font-size:11px;color:#aaa">ID:'+String(c.id).slice(-4)+'</span>'+((canEditCustomer(c)||canDeleteCustomer(c))?'<div style="display:flex;gap:5px">'+(canEditCustomer(c)?'<button class="bic" onclick="editC('+c.id+')">&#9999; \u0e41\u0e01\u0e49\u0e44\u0e02</button>':'')+(canDeleteCustomer(c)?'<button class="bic bdl" onclick="delC('+c.id+')">&#128465;</button>':'')+'</div>':'')+'</div></div>';
   }).join('');
 }
 
@@ -564,38 +564,16 @@ const EXPORT_FIELDS=[
   {k:'note',l:'หมายเหตุ',v:function(c){return c.note||''}}
 ];
 window.renderExportOptions=function(){
-  var vkeys=Object.keys(USERS);
-  var uEl=document.getElementById('expUsers');
-  var fEl=document.getElementById('expFields');
-  // Step1: เลือก User
-  if(uEl){
-    uEl.innerHTML='<label style="font-size:12px;margin-right:10px"><input type="checkbox" id="expAll" checked onchange="window.toggleAllUsers(this)"> <strong>ทั้งหมด</strong></label>'
-    +vkeys.map(function(k){ return '<label style="font-size:12px;margin-right:8px"><input type="checkbox" class="expU" value="'+xss(k)+'" checked> '+xss(userLabel(k))+'</label>'; }).join('');
-  }
-  // Step2: เลือก Fields
-  if(fEl){
-    fEl.innerHTML=EXPORT_FIELDS.map(function(f){ return '<label style="font-size:12px;color:#444"><input type="checkbox" class="expF" value="'+f.k+'" checked> '+xss(f.l)+'</label>'; }).join('');
-  }
+  var el=document.getElementById('expFields'); if(!el) return;
+  el.innerHTML=EXPORT_FIELDS.map(function(f){ return '<label style="font-size:12px;color:#444"><input type="checkbox" class="expF" value="'+f.k+'" checked> '+xss(f.l)+'</label>'; }).join('');
 }
 function selectedExportFields(){
   var keys=Array.from(document.querySelectorAll('.expF:checked')).map(function(x){return x.value;});
   var fields=EXPORT_FIELDS.filter(function(f){ return keys.indexOf(f.k)>-1; });
   return fields.length?fields:EXPORT_FIELDS;
 }
-function selectedExportUsers(){
-  var keys=Array.from(document.querySelectorAll('.expU:checked')).map(function(x){return x.value;});
-  return keys.length?keys:Object.keys(USERS);
-}
-window.toggleAllUsers=function(cb){
-  document.querySelectorAll('.expU').forEach(function(el){ el.checked=cb.checked; });
-}
 function exportRows(){
-  var fields=selectedExportFields();
-  var ukeys=selectedExportUsers();
-  var rows=visibleCusts().filter(function(c){
-    var owner=c.owner||me;
-    return ukeys.indexOf(owner)>-1;
-  });
+  var fields=selectedExportFields(), rows=visibleCusts();
   return {fields:fields, rows:rows};
 }
 window.doCSV=function(){
@@ -642,20 +620,11 @@ window.renderAdmin = function(){
     h+='<div class="fg"><label>เพิ่มข้อมูลลูกค้า</label><select id="nuAdd"><option value="1">ทำได้</option><option value="0">ไม่ได้</option></select></div>';
     h+='</div>';
     h+='<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">';
-    h+='<div class="fg"><label>ดูข้อมูลของใคร</label><select id="nuViewScope" onchange="window.toggleOwnerBox(\'nu\',\'nvbox_new\',\'new\',this.value)"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>';
-
-    h+='<div class="fg"><label>แก้ไขข้อมูลของใคร</label><select id="nuEditScope" onchange="window.toggleOwnerBox(\'nu\',\'nebox_new\',\'new\',this.value)"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>';
-
+    h+='<div class="fg"><label>ดูข้อมูลของใคร</label><select id="nuViewScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div>';
+    h+='<div class="fg"><label>แก้ไขข้อมูลของใคร</label><select id="nuEditScope"><option value="own">เฉพาะของตัวเอง</option><option value="selected">เลือกเจ้าของข้อมูล</option><option value="all">ทั้งหมด</option></select></div>';
     h+='</div>';
-    h+='<div id="nvbox_new" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:10px;margin:8px 0;background:#fff">';
-    h+='<div style="font-size:11px;color:#666;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#E8470A;font-weight:600">(ดู)</span> — เลือกได้หลายคน</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){ return '<label style="font-size:12px"><input type="checkbox" class="nuVU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>'; }).join('')+'</div>';
-    h+='</div>';
-    h+='<div id="nebox_new" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:10px;margin:8px 0;background:#fff">';
-    h+='<div style="font-size:11px;color:#666;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span> — เลือกได้หลายคน</div>';
-    h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){ return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>'; }).join('')+'</div>';
-    h+='</div>';
-
+    h+='<div style="font-size:11px;color:#666;margin:6px 0 4px">เลือกเจ้าของข้อมูลที่อนุญาต เมื่อใช้โหมด "เลือกเจ้าของข้อมูล"</div>';
+    h+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px">'+userKeys.map(function(k){ return '<label style="font-size:12px;color:#444"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> ดู '+xss(userLabel(k))+'</label><label style="font-size:12px;color:#444"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> แก้ '+xss(userLabel(k))+'</label>'; }).join('')+'</div>';
     h+='<div style="display:flex;gap:10px;flex-wrap:wrap;margin:8px 0"><label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> แก้ไขได้</label><label style="font-size:12px"><input type="checkbox" id="nuDel" checked> ลบได้</label><label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export ได้</label><label style="font-size:12px"><input type="checkbox" id="nuProd"> จัดการสินค้า</label><label style="font-size:12px"><input type="checkbox" id="nuUsers"> จัดการ User</label></div>';
     h+='<button class="bsave" onclick="window.addUser()">&#43; สร้าง User</button>';
     h+='</div>';
@@ -814,10 +783,10 @@ window.renderSystem = function(){
       +'<div class="fg"><label style="font-size:11px">\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="ur_'+k+'" style="'+sf+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>'
       +'</div>'
       +'<div class="g2" style="margin-bottom:6px">'
-      +'<div class="fg"><label style="font-size:11px">ดูข้อมูลของใคร</label><select id="uvs_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'uvs_\',\'vbox_\',\''+k+'\'  ,this.value)"><option value="own">เฉพาะตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>'
-      +'<div class="fg"><label style="font-size:11px">แก้ไขของใคร</label><select id="ues_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'ues_\',\'ebox_\',\''+k+'\'  ,this.value)"><option value="own">เฉพาะตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>'
+      +'<div class="fg"><label style="font-size:11px">\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="uvs_'+k+'" style="'+sf+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>'
+      +'<div class="fg"><label style="font-size:11px">\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="ues_'+k+'" style="'+sf+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>'
       +'</div>'
-      +(ko.length?'<div id="vbox_'+k+'" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:8px;margin:6px 0;background:#fff"><div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#E8470A">(ดู)</span> — เลือกได้หลายคน</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+vC+'</div></div><div id="ebox_'+k+'" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:8px;margin:6px 0;background:#fff"><div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#1a7c3e">(แก้ไข)</span> — เลือกได้หลายคน</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+eC+'</div></div>' :'')
+      +(ko.length?'<div style="font-size:11px;color:#666;margin:4px 0">\u0e14\u0e39: '+vC+' | \u0e41\u0e01\u0e49: '+eC+'</div>':'')
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px">'
       +'<label style="font-size:11px"><input type="checkbox" id="pa_'+k+'"> \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pe_'+k+'"> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>'
@@ -834,8 +803,8 @@ window.renderSystem = function(){
   userKeys.forEach(function(k){
     var u=USERS[k], p=u.perms||{};
     var rs=document.getElementById('ur_'+k); if(rs) rs.value=u.role||'sale';
-    var vs=document.getElementById('uvs_'+k); if(vs){ vs.value=p.viewScope||'own'; window.toggleOwnerBox('uvs_','vbox_',k,vs.value); }
-    var es=document.getElementById('ues_'+k); if(es){ es.value=p.editScope||'own'; window.toggleOwnerBox('ues_','ebox_',k,es.value); }
+    var vs=document.getElementById('uvs_'+k); if(vs) vs.value=p.viewScope||'own';
+    var es=document.getElementById('ues_'+k); if(es) es.value=p.editScope||'own';
     var bx={pa_:!!p.canAdd,pe_:!!p.canEdit,pd_:!!p.canDelete,px_:!!p.canExport,pp_:!!p.canProducts,pu_:!!p.canUsers};
     Object.keys(bx).forEach(function(pfx){ var b=document.getElementById(pfx+k); if(b) b.checked=bx[pfx]; });
     (p.viewUsers||[]).forEach(function(v){ var b=document.querySelector('.vu_'+k+'[value="'+v+'"]'); if(b) b.checked=true; });
@@ -844,14 +813,6 @@ window.renderSystem = function(){
 }
 function checkedVals(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(function(x){return x.value;}); }
 function selectedVals(id){ var el=document.getElementById(id); return el?Array.from(el.selectedOptions).map(function(x){return x.value;}):[]; }
-
-window.toggleOwnerBox = function(prefix, boxId, key, val){
-  var box = document.getElementById(boxId.replace('_new', '_'+key));
-  if(!box) box = document.getElementById(boxId); // fallback for create form
-  if(!box) return;
-  box.style.display = (val==='selected') ? 'block' : 'none';
-};
-
 window.addUser=async function(){
   if(!canManageUsers()){ showT('t4','ไม่มีสิทธิ์จัดการ User',true); return; }
   var k=(document.getElementById('nuKey').value||'').trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
@@ -1137,14 +1098,8 @@ window.dDr = async function(e){
     <!-- EXPORT -->
     <div class="pane" id="pane-export">
       <div class="sec-t" style="border-top:none;padding-top:0">&#8659; ส่งออกข้อมูล</div>
-      <!-- Step 1: เลือก User -->
-      <div class="psel-wrap" style="margin-bottom:10px">
-        <div class="slbl" style="margin-bottom:6px">&#128100; ขั้นตอนที่ 1 — เลือกข้อมูลของผู้ใด</div>
-        <div id="expUsers" style="display:flex;flex-wrap:wrap;gap:8px"></div>
-      </div>
-      <!-- Step 2: เลือก Fields -->
-      <div class="psel-wrap" style="margin-bottom:10px">
-        <div class="slbl" style="margin-bottom:6px">&#9745; ขั้นตอนที่ 2 — เลือกชนิดข้อมูลที่ต้องการ</div>
+      <div class="psel-wrap">
+        <div class="slbl">เลือกข้อมูลที่ต้องการส่งออก</div>
         <div id="expFields" style="display:flex;flex-wrap:wrap;gap:10px"></div>
       </div>
       <div class="eb">
