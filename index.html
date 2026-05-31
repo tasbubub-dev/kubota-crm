@@ -794,109 +794,110 @@ window.renderSystem = function(){
   if(!el) return;
   if(!canManageUsers()){ el.innerHTML='<div class="empty">\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e23\u0e30\u0e1a\u0e1a</div>'; return; }
   var userKeys=Object.keys(USERS);
-  var ownerVChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
-  var ownerEChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
+  var sf='width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:7px;font-size:12px;background:#fff';
   var fld='width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff';
   var h='';
-  h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128100; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</div>';
-  // ===== CREATE USER FORM =====
-  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:16px;margin-bottom:16px;background:#FFF0EB">';
-  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="\u0e40\u0e0a\u0e48\u0e19 sale2" style="'+fld+'"></div>';
-  h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div></div>';
-  h+='<div class="g2"><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
-  h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div></div>';
-  h+='<div class="g2"><div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select><div id="nesummary" style="font-size:10px;color:#1a7c3e;margin-top:3px;display:none"></div></div>';
-  h+='<div id="nebox_new" style="display:none;border:1.5px solid #1a7c3e;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
-  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span></div>';
-  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+
+  // ===== SECTION 1: CREATE USER FORM =====
+  h+='<div style="font-size:15px;font-weight:700;color:#E8470A;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #E8470A">&#43; \u0e2a\u0e23\u0e49\u0e32\u0e07 User \u0e43\u0e2b\u0e21\u0e48</div>';
+  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:16px;margin-bottom:20px;background:#FFF0EB">';
+
+  // Row 1: Username + ชื่อที่แสดง
+  h+='<div class="g2">';
+  h+='<div class="fg"><label>Username</label><input id="nuKey" placeholder="\u0e40\u0e0a\u0e48\u0e19 sale2" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div>';
   h+='</div>';
-  // endnebox
-  h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div></div>';
-  h+='<div class="g2"><div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" onchange="window.toggleOwnerBox(\'nvbox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">เลือกระบุ...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nvsummary" style="font-size:10px;color:#E8470A;margin-top:3px;display:none"></div></div>';
+
+  // Row 2: Email + Password
+  h+='<div class="g2">';
+  h+='<div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div>';
+  h+='</div>';
+
+  // Row 3: สิทธิหลัก + เพิ่มลูกค้า
+  h+='<div class="g2">';
+  h+='<div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>';
+  h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div>';
+  h+='</div>';
+
+  // Row 4: ดูข้อมูลของใคร + แก้ไขของใคร (scope selects)
+  h+='<div class="g2">';
+  h+='<div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" onchange="window.toggleOwnerBox(\'nvbox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e23\u0e30\u0e1a\u0e38...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nvsummary" style="font-size:10px;color:#E8470A;margin-top:3px;display:none"></div></div>';
+  h+='<div class="fg"><label>\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuEditScope" onchange="window.toggleOwnerBox(\'nebox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e23\u0e30\u0e1a\u0e38...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nesummary" style="font-size:10px;color:#1a7c3e;margin-top:3px;display:none"></div></div>';
+  h+='</div>';
+
+  // Collapsible owner boxes
   h+='<div id="nvbox_new" style="display:none;border:1.5px solid #E8470A;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
-  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#E8470A;font-weight:600">(ดู)</span></div>';
+  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 <span style="color:#E8470A;font-weight:600">(\u0e14\u0e39)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div>';
   h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuVU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
   h+='</div>';
-  // endnvbox
-  h+='<div class="fg"><label>\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuEditScope" onchange="window.toggleOwnerBox(\'nebox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">เลือกระบุ...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nesummary" style="font-size:10px;color:#1a7c3e;margin-top:3px;display:none"></div></div>';
   h+='<div id="nebox_new" style="display:none;border:1.5px solid #1a7c3e;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
-  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของ <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span></div>';
+  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25 <span style="color:#1a7c3e;font-weight:600">(\u0e41\u0e01\u0e49\u0e44\u0e02)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div>';
   h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
   h+='</div>';
-  // endnebox
-  var el=document.getElementById('sysW');
-  if(!el) return;
-  if(!canManageUsers()){ el.innerHTML='<div class="empty">\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e23\u0e30\u0e1a\u0e1a</div>'; return; }
-  var userKeys=Object.keys(USERS);
-  var ownerVChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
-  var ownerEChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
-  var fld='width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff';
-  var h='';
-  h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128100; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</div>';
-  // ===== CREATE USER FORM =====
-  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:16px;margin-bottom:16px;background:#FFF0EB">';
-  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="\u0e40\u0e0a\u0e48\u0e19 sale2" style="'+fld+'"></div>';
-  h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div></div>';
-  h+='<div class="g2"><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
-  h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div></div>';
-  h+='<div class="g2"><div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>';
-  h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div></div>';
-  h+='<div class="g2"><div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>';
-  h+='<div class="fg"><label>\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuEditScope" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div></div>';
-  h+='<div style="font-size:11px;color:#666;margin:6px 0 4px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e17\u0e35\u0e48\u0e2d\u0e19\u0e38\u0e0d\u0e32\u0e15 \u0e40\u0e21\u0e37\u0e48\u0e2d\u0e43\u0e0a\u0e49\u0e42\u0e2b\u0e21\u0e14 "\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25"</div>';
-  h+='<div id="nvbox_new" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:8px;margin:5px 0;background:#fff">';
-  h+='<div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของ <span style="color:#E8470A;font-weight:600">(ดู)</span></div>';
-  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuVU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+
+  // Row 5: Permissions checkboxes
+  h+='<div style="display:flex;gap:12px;flex-wrap:wrap;margin:10px 0">';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuEdit" checked> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuDel" checked> \u0e25\u0e1a\u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuExp" checked> Export \u0e44\u0e14\u0e49</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuProd"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</label>';
+  h+='<label style="font-size:12px"><input type="checkbox" id="nuUsers"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label>';
   h+='</div>';
-  h+='<div id="nebox_new" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:8px;margin:5px 0;background:#fff">';
-  h+='<div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของ <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span></div>';
-  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+
+  // Save button
+  h+='<button onclick="window.addUser()" style="background:#E8470A;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px">&#43; \u0e2a\u0e23\u0e49\u0e32\u0e07 User</button>';
   h+='</div>';
-  // ===== USER LIST =====
-  h+='<div style="font-size:13px;font-weight:700;color:#333;margin-bottom:8px">&#128101; User \u0e17\u0e35\u0e48\u0e21\u0e35\u0e2d\u0e22\u0e39\u0e48</div>';
+
+  // ===== SECTION 2: USER LIST =====
+  h+='<div style="font-size:15px;font-weight:700;color:#333;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #ddd">&#128101; User \u0e17\u0e35\u0e48\u0e21\u0e35\u0e2d\u0e22\u0e39\u0e48</div>';
   h+='<div style="border:1.5px solid #ddd;border-radius:10px;background:#fff;overflow:hidden;margin-bottom:12px">';
   h+=userKeys.map(function(k){
     var u=USERS[k], p=u.perms||{}, isAdmin=(k==='admin');
     var ko=userKeys.filter(function(x){return x!==k;});
     var vC=ko.map(function(o){ return '<label style="font-size:11px;white-space:nowrap"><input type="checkbox" class="vu_'+k+'" value="'+xss(o)+'"> '+xss(userLabel(o))+'</label>'; }).join(' ');
     var eC=ko.map(function(o){ return '<label style="font-size:11px;white-space:nowrap"><input type="checkbox" class="eu_'+k+'" value="'+xss(o)+'"> '+xss(userLabel(o))+'</label>'; }).join(' ');
-    var sf='width:100%;padding:5px 8px;border:1px solid #ddd;border-radius:7px;font-size:12px;background:#fff';
     return '<div style="padding:12px 14px;border-bottom:1px solid #eee">'
       +'<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:8px">'
       +'<div><strong style="font-size:13px">'+xss(k)+'</strong> <span style="font-size:11px;color:#888">('+xss(u.email)+')</span></div>'
       +(isAdmin?'<span style="font-size:11px;color:#aaa">admin \u0e44\u0e21\u0e48\u0e2a\u0e32\u0e21\u0e32\u0e23\u0e16\u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</span>'
-        :'<button onclick="window.delUser(\''+k+'\')" style="background:none;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">&#128465; \u0e25\u0e1a</button>')+'</div>'
+        :'<button onclick="window.delUser(\''+k+'\')" style="background:none;border:1px solid #c0392b;color:#c0392b;border-radius:6px;padding:3px 8px;font-size:11px;cursor:pointer">&#128465; \u0e25\u0e1a</button>')
+      +'</div>'
       +'<div class="g2" style="margin-bottom:6px">'
       +'<div class="fg"><label style="font-size:11px">\u0e0a\u0e37\u0e48\u0e2d</label><input id="un_'+k+'" value="'+xss(u.name||k)+'" style="'+sf+'"></div>'
       +'<div class="fg"><label style="font-size:11px">\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="ur_'+k+'" style="'+sf+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>'
       +'</div>'
-      +'<div class="g2" style="margin-bottom:6px">'
-      +'<div class="fg"><label style="font-size:11px">ดูข้อมูลของใคร</label><select id="uvs_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'vbox_\',\''+k+'\',this.value)"><option value="own">เฉพาะตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>'
-      +'<div class="fg"><label style="font-size:11px">แก้ไขของใคร</label><select id="ues_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'ebox_\',\''+k+'\',this.value)"><option value="own">เฉพาะตัวเอง</option><option value="selected">เลือกระบุ...</option><option value="all">ทั้งหมด</option></select></div>'
+      +'<div class="g2" style="margin-bottom:4px">'
+      +'<div class="fg"><label style="font-size:11px">\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="uvs_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'vbox_\',\''+k+'\',this.value)"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e23\u0e30\u0e1a\u0e38...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="vsummary_'+k+'" style="font-size:10px;color:#E8470A;margin-top:2px;display:none"></div></div>'
+      +'<div class="fg"><label style="font-size:11px">\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="ues_'+k+'" style="'+sf+'" onchange="window.toggleOwnerBox(\'ebox_\',\''+k+'\',this.value)"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e23\u0e30\u0e1a\u0e38...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="esummary_'+k+'" style="font-size:10px;color:#1a7c3e;margin-top:2px;display:none"></div></div>'
       +'</div>'
-      +(ko.length?'<div id="vbox_'+k+'" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:8px;margin:6px 0;background:#fff"><div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#E8470A">(ดู)</span> — เลือกได้หลายคน</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+vC+'</div></div><div id="ebox_'+k+'" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:8px;margin:6px 0;background:#fff"><div style="font-size:11px;color:#666;margin-bottom:5px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#1a7c3e">(แก้ไข)</span> — เลือกได้หลายคน</div><div style="display:flex;flex-wrap:wrap;gap:8px">'+eC+'</div></div>' :'')
+      +(ko.length?'<div id="vbox_'+k+'" style="display:none;border:1px solid #E8470A;border-radius:7px;padding:8px;margin:5px 0;background:#fff"><div style="font-size:11px;color:#555;margin-bottom:5px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07 <span style="color:#E8470A;font-weight:600">(\u0e14\u0e39)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+vC+'</div></div>':'')
+      +(ko.length?'<div id="ebox_'+k+'" style="display:none;border:1px solid #1a7c3e;border-radius:7px;padding:8px;margin:5px 0;background:#fff"><div style="font-size:11px;color:#555;margin-bottom:5px">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07 <span style="color:#1a7c3e;font-weight:600">(\u0e41\u0e01\u0e49\u0e44\u0e02)</span> \u2014 \u0e15\u0e34\u0e4a\u0e01\u0e44\u0e14\u0e49\u0e2b\u0e25\u0e32\u0e22\u0e04\u0e19</div><div style="display:flex;flex-wrap:wrap;gap:6px">'+eC+'</div></div>':'')
       +'<div style="display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 8px">'
       +'<label style="font-size:11px"><input type="checkbox" id="pa_'+k+'"> \u0e40\u0e1e\u0e34\u0e48\u0e21\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pe_'+k+'"> \u0e41\u0e01\u0e49\u0e44\u0e02\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pd_'+k+'"> \u0e25\u0e1a\u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="px_'+k+'"> Export \u0e44\u0e14\u0e49</label>'
       +'<label style="font-size:11px"><input type="checkbox" id="pp_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e2a\u0e34\u0e19\u0e04\u0e49\u0e32</label>'
-      +'<label style="font-size:11px"><input type="checkbox" id="pu_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label></div>'
+      +'<label style="font-size:11px"><input type="checkbox" id="pu_'+k+'"> \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</label>'
+      +'</div>'
       +(isAdmin?'':'<button onclick="window.updUser(\''+k+'\')" style="background:#E8470A;color:#fff;border:none;padding:6px 14px;border-radius:7px;font-size:12px;cursor:pointer">&#128190; \u0e1a\u0e31\u0e19\u0e17\u0e36\u0e01</button>')
       +'</div>';
   }).join('');
   h+='</div>';
   el.innerHTML=h;
-  // Restore values
+
+  // Restore values for existing users
   userKeys.forEach(function(k){
     var u=USERS[k], p=u.perms||{};
-    var rs=document.getElementById('ur_'+k); if(rs) rs.value=u.role||'sale';
-    var vs=document.getElementById('uvs_'+k); if(vs){ vs.value=p.viewScope||'own'; window.toggleOwnerBox('vbox_',k,vs.value); }
-    var es=document.getElementById('ues_'+k); if(es){ es.value=p.editScope||'own'; window.toggleOwnerBox('ebox_',k,es.value); }
+    var rs2=document.getElementById('ur_'+k); if(rs2) rs2.value=u.role||'sale';
+    var vs=document.getElementById('uvs_'+k); if(vs){ vs.value=p.viewScope||'own'; window.toggleOwnerBox('vbox_',k,vs.value); window.updateScopeLabel(k); }
+    var es=document.getElementById('ues_'+k); if(es){ es.value=p.editScope||'own'; window.toggleOwnerBox('ebox_',k,es.value); window.updateScopeLabel(k); }
     var bx={pa_:!!p.canAdd,pe_:!!p.canEdit,pd_:!!p.canDelete,px_:!!p.canExport,pp_:!!p.canProducts,pu_:!!p.canUsers};
     Object.keys(bx).forEach(function(pfx){ var b=document.getElementById(pfx+k); if(b) b.checked=bx[pfx]; });
     (p.viewUsers||[]).forEach(function(v){ var b=document.querySelector('.vu_'+k+'[value="'+v+'"]'); if(b) b.checked=true; });
     (p.editUsers||[]).forEach(function(v){ var b=document.querySelector('.eu_'+k+'[value="'+v+'"]'); if(b) b.checked=true; });
+    window.updateScopeLabel(k);
   });
 }
 function checkedVals(cls){ return Array.from(document.querySelectorAll('.'+cls+':checked')).map(function(x){return x.value;}); }
