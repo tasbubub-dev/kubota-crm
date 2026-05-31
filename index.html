@@ -495,7 +495,7 @@ window.renderList = function(){
     +'<div style="background:'+(_ism?'#f0fff4':'#eef3ff')+';border-bottom:1.5px solid '+(_ism?'#b7e4c7':'#c5d5f5')+';padding:5px 12px;font-size:11px;font-weight:700;color:'+(_ism?'#276749':'#1a4a9b')+'">&#128100; ลูกค้าของ '+xss(_oname)+'</div>'
     +'<div style="padding:12px 14px">'
     +'<div class="ch"><div>'
-    +'<div class="cn">'+xss(c.name)+'</div>'
+    +'<div class="cn" style="display:flex;align-items:center;gap:5px">'+xss(c.name)+'<span style="font-size:13px;color:'+_hcol+';line-height:1" title="'+HEAT_NAME[_ht]+'">'  +_hlbl+'</span></div>'
     +(c.date?'<div class="cd">&#128197; '+c.date+'</div>':'')
     +'</div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'
     +'<span style="font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:'+_hbg+';color:'+_hcol+'">'+_hlbl+'</span>'
