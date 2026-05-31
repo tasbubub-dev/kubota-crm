@@ -574,7 +574,7 @@ window.renderFollow = function(){
   var vc=visibleCusts();
   var due=vc.filter(function(c){ return c.followup&&c.followup<=t&&c.status!=2&&c.status!=3; });
   var soon=vc.filter(function(c){ return c.followup&&c.followup>t&&c.followup<=d7s; });
-  var pend=vc.filter(function(c){ return !c.status||c.status==0; });
+  var pend=vc.filter(function(c){ return c.status==1 || !!c.followup; });
   function fc(c){ var st=c.status||0; var tot=(c.cart||[]).concat(c.accCart||[]).reduce(function(s,x){ return s+x.p*x.q; },0); return '<div class="fi"><div class="fii"><div class="fin">'+xss(c.name)+'</div><div class="fis">'+(c.tel||'')+(c.followup?' &middot; \u0e19\u0e31\u0e14 '+c.followup:'')+(tot?' &middot; '+fmt(tot):'')+'</div></div><span class="sbadge '+SC[st]+'">'+ST[st]+'</span>'+(canEditCustomer(c)?'<button class="bic" onclick="editC('+c.id+');goTab(\'add\',1)">&#9999;</button>':'')+'</div>'; }
   document.getElementById('fDue').innerHTML=due.length?due.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
   document.getElementById('fSoon').innerHTML=soon.length?soon.map(fc).join(''):'<div style="font-size:12px;color:#aaa;padding:8px 0">\u0e44\u0e21\u0e48\u0e21\u0e35</div>';
