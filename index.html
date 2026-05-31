@@ -805,6 +805,40 @@ window.renderSystem = function(){
   h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div></div>';
   h+='<div class="g2"><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
   h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div></div>';
+  h+='<div class="g2"><div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select><div id="nesummary" style="font-size:10px;color:#1a7c3e;margin-top:3px;display:none"></div></div>';
+  h+='<div id="nebox_new" style="display:none;border:1.5px solid #1a7c3e;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
+  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span></div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+  h+='</div>';
+  // endnebox
+  h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div></div>';
+  h+='<div class="g2"><div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" onchange="window.toggleOwnerBox(\'nvbox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">เลือกระบุ...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nvsummary" style="font-size:10px;color:#E8470A;margin-top:3px;display:none"></div></div>';
+  h+='<div id="nvbox_new" style="display:none;border:1.5px solid #E8470A;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
+  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของข้อมูลที่อนุญาต <span style="color:#E8470A;font-weight:600">(ดู)</span></div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuVU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+  h+='</div>';
+  // endnvbox
+  h+='<div class="fg"><label>\u0e41\u0e01\u0e49\u0e44\u0e02\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuEditScope" onchange="window.toggleOwnerBox(\'nebox_new\',\'\',this.value)" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">เลือกระบุ...</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select><div id="nesummary" style="font-size:10px;color:#1a7c3e;margin-top:3px;display:none"></div></div>';
+  h+='<div id="nebox_new" style="display:none;border:1.5px solid #1a7c3e;border-radius:8px;padding:10px;margin:6px 0;background:#fff">';
+  h+='<div style="font-size:11px;color:#555;margin-bottom:6px">เลือกเจ้าของ <span style="color:#1a7c3e;font-weight:600">(แก้ไข)</span></div>';
+  h+='<div style="display:flex;flex-wrap:wrap;gap:8px">'+userKeys.map(function(uk){return '<label style="font-size:12px"><input type="checkbox" class="nuEU" value="'+xss(uk)+'"> '+xss(userLabel(uk))+'</label>';}).join('')+'</div>';
+  h+='</div>';
+  // endnebox
+  var el=document.getElementById('sysW');
+  if(!el) return;
+  if(!canManageUsers()){ el.innerHTML='<div class="empty">\u0e44\u0e21\u0e48\u0e21\u0e35\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e4c\u0e08\u0e31\u0e14\u0e01\u0e32\u0e23\u0e23\u0e30\u0e1a\u0e1a</div>'; return; }
+  var userKeys=Object.keys(USERS);
+  var ownerVChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuVU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
+  var ownerEChks=userKeys.map(function(k){ return '<label style="font-size:12px;white-space:nowrap"><input type="checkbox" class="nuEU" value="'+xss(k)+'"> '+xss(userLabel(k))+'</label>'; }).join(' ');
+  var fld='width:100%;padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px;background:#fff';
+  var h='';
+  h+='<div style="font-size:14px;font-weight:700;color:#333;margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid #eee">&#128100; \u0e08\u0e31\u0e14\u0e01\u0e32\u0e23 User</div>';
+  // ===== CREATE USER FORM =====
+  h+='<div style="border:1.5px solid #E8470A;border-radius:10px;padding:16px;margin-bottom:16px;background:#FFF0EB">';
+  h+='<div class="g2"><div class="fg"><label>Username</label><input id="nuKey" placeholder="\u0e40\u0e0a\u0e48\u0e19 sale2" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>\u0e0a\u0e37\u0e48\u0e2d\u0e17\u0e35\u0e48\u0e41\u0e2a\u0e14\u0e07</label><input id="nuName" placeholder="\u0e0a\u0e37\u0e48\u0e2d\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19" style="'+fld+'"></div></div>';
+  h+='<div class="g2"><div class="fg"><label>Email Login</label><input id="nuEmail" placeholder="user@kubota-crm.app" style="'+fld+'"></div>';
+  h+='<div class="fg"><label>Password</label><input id="nuPass" type="password" placeholder="\u0e2d\u0e22\u0e48\u0e32\u0e07\u0e19\u0e49\u0e2d\u0e22 6 \u0e15\u0e31\u0e27" style="'+fld+'"></div></div>';
   h+='<div class="g2"><div class="fg"><label>\u0e2a\u0e34\u0e17\u0e18\u0e34\u0e2b\u0e25\u0e31\u0e01</label><select id="nuRole" style="'+fld+'"><option value="sale">User \u0e17\u0e31\u0e48\u0e27\u0e44\u0e1b</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></div>';
   h+='<div class="fg"><label>\u0e40\u0e1e\u0e34\u0e48\u0e21\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e25\u0e39\u0e01\u0e04\u0e49\u0e32</label><select id="nuAdd" style="'+fld+'"><option value="1">\u0e17\u0e33\u0e44\u0e14\u0e49</option><option value="0">\u0e44\u0e21\u0e48\u0e44\u0e14\u0e49</option></select></div></div>';
   h+='<div class="g2"><div class="fg"><label>\u0e14\u0e39\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25\u0e02\u0e2d\u0e07\u0e43\u0e04\u0e23</label><select id="nuViewScope" style="'+fld+'"><option value="own">\u0e40\u0e09\u0e1e\u0e32\u0e30\u0e02\u0e2d\u0e07\u0e15\u0e31\u0e27\u0e40\u0e2d\u0e07</option><option value="selected">\u0e40\u0e25\u0e37\u0e2d\u0e01\u0e40\u0e08\u0e49\u0e32\u0e02\u0e2d\u0e07\u0e02\u0e49\u0e2d\u0e21\u0e39\u0e25</option><option value="all">\u0e17\u0e31\u0e49\u0e07\u0e2b\u0e21\u0e14</option></select></div>';
