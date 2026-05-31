@@ -243,9 +243,9 @@ window.showLoading = window.showLoading = function showLoading(on){ var el=docum
 
 // ===== APP DATA =====
 const DEFAULT_USERS = {
-  admin:{email:"admin@kubota-crm.app",role:'admin',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e41\u0e25\u0e23\u0e30\u0e1a\u0e1a',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:true,canUsers:true,viewScope:'all',editScope:'all',viewUsers:[],editUsers:[]}},
-  sale:{email:"sale@kubota-crm.app",role:'sale',name:'\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e02\u0e32\u0e22',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}},
-  viewer:{email:"viewer@kubota-crm.app",role:'viewer',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19',perms:{canAdd:false,canEdit:false,canDelete:false,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}}
+  admin:{email:"tasbubub@gmail.com",role:'admin',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e41\u0e25\u0e23\u0e30\u0e1a\u0e1a',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:true,canUsers:true,viewScope:'all',editScope:'all',viewUsers:[],editUsers:[]}},
+  sale:{email:"sale@kubota.com",role:'sale',name:'\u0e1e\u0e19\u0e31\u0e01\u0e07\u0e32\u0e19\u0e02\u0e32\u0e22',perms:{canAdd:true,canEdit:true,canDelete:true,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}},
+  viewer:{email:"viewer@kubota.com",role:'viewer',name:'\u0e1c\u0e39\u0e49\u0e14\u0e39\u0e23\u0e32\u0e22\u0e07\u0e32\u0e19',perms:{canAdd:false,canEdit:false,canDelete:false,canExport:true,canProducts:false,canUsers:false,viewScope:'own',editScope:'own',viewUsers:[],editUsers:[]}}
 };
 let USERS = JSON.parse(JSON.stringify(DEFAULT_USERS));
 const RLBL = { admin:'<span class=\"rb rba\">Admin</span>', sale:'<span class=\"rb rbs\">Sale</span>', viewer:'<span class=\"rb rbv\">Viewer</span>' };
